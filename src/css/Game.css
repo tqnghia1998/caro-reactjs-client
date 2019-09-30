@@ -1,0 +1,140 @@
+.App {
+  text-align: center;
+}
+
+body {
+  background-color: #282c34;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 10vmin;
+  pointer-events: none;
+  margin: 10px;
+}
+
+.App-header {
+  background-color: #282c34;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: flex-start;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.status {
+  font: 20px "Times New Roman", Futura, sans-serif;
+  margin-bottom: 20px;
+}
+
+.square {
+  background: rgb(222, 222, 222);
+  border: 1px solid #999;
+  float: left;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 26px;
+  height: 26px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 26px;
+}
+
+.square-win {
+  background: rgb(254, 255, 178);
+  border: 1px solid #999;
+  float: left;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 26px;
+  height: 26px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 26px;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+.board-button {
+  font: 18px "Times New Roman", Futura, sans-serif;
+  height: 30px;
+  width: 225px;
+  text-align: left;
+}
+
+.function-button {
+  font: 18px "Times New Roman", Futura, sans-serif;
+  height: 30px;
+  margin-right: 30px;
+  width: 160px;
+  text-align: left;
+}
+
+.board-button-bold {
+  font: 18px "Times New Roman", Futura, sans-serif;
+  height: 30px;
+  width: 225px;
+  text-align: left;
+  font-weight: bold;
+}
+
+ol {
+  font-size: 13px;
+  margin-left: 25px;
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 500px;
+}
+
+.board-game {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
