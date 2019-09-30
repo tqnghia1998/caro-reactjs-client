@@ -12,7 +12,7 @@ class Game extends Component {
             history: [{
                 x: null,
                 y: null,
-                squares: Array(Config.brdSize).fill(null).map(a => { return Array(Config.brdSize).fill(null)})
+                squares: Array(Config.brdSize).fill(null).map(() => { return Array(Config.brdSize).fill(null)})
             }],
             nextMove: Config.xPlayer,
             stepNumber: 0,
@@ -21,50 +21,245 @@ class Game extends Component {
         }
     }
 
-    render() {
-        const history = this.state.history;
-        const stepNumber = this.state.stepNumber;
-        const current = history[stepNumber];
-        const nextMove = this.state.nextMove;
-        const winCells = this.state.winCells;
+    checkWin(row, col, user, step) {
 
-        var moves = [];
+        if (step === 0) {
+            return null;
+        }
+
+        const {history} = this.state;
+        const current = history[step];
+        const squares = current.squares.slice();
+
+        // Get coordinates
+        let coorX = row;
+        let coorY = col;
+ 
+        let countCol = 1;
+        let countRow = 1;
+        let countMainDiagonal = 1;
+        let countSkewDiagonal = 1;
+        let isBlock;
+        const rival = (user === Config.xPlayer) ? Config.oPlayer : Config.xPlayer;
+ 
+        // Check col
+        isBlock = true;
+        let winCells = [];
+        coorX -= 1;
+        while(coorX >= 0 && squares[coorX][coorY] === user) {
+            countCol += 1;
+            winCells.push([coorX, coorY]);
+            coorX -= 1;
+        }
+        if (coorX >= 0 && squares[coorX][coorY] !== rival) {
+            isBlock = false;
+        }
+        coorX = row;
+        winCells.push([coorX, coorY]);
+        coorX += 1;
+        while(coorX <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
+            countCol += 1;
+            winCells.push([coorX, coorY]);
+            coorX += 1;
+        }
+        if (coorX <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
+            isBlock = false;
+        }
+        coorX = row;
+        if (isBlock === false && countCol >= 5) return winCells;
+ 
+        // Check row
+        isBlock = true;
+        winCells = [];
+        coorY -= 1;
+        while(coorY >= 0 && squares[coorX][coorY] === user) {
+            countRow += 1;
+            winCells.push([coorX, coorY]);
+            coorY -= 1;
+        }
+        if (coorY >= 0 && squares[coorX][coorY] !== rival) {
+            isBlock = false;
+        }
+        coorY = col;
+        winCells.push([coorX, coorY]);
+        coorY += 1;
+        while(coorY <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
+            countRow += 1;
+            winCells.push([coorX, coorY]);
+            coorY += 1;
+        }
+        if (coorY <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
+            isBlock = false;
+        }
+        coorY = col;
+        if (isBlock === false && countRow >= 5) return winCells;
+
+        // Check main diagonal
+        isBlock = true;
+        winCells = [];
+        coorX -= 1;
+        coorY -= 1;
+        while(coorX >= 0 && coorY >= 0 && squares[coorX][coorY] === user) {
+            countMainDiagonal += 1;
+            winCells.push([coorX, coorY]);
+            coorX -= 1;
+            coorY -= 1;
+        }
+        if (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] !== rival) {
+            isBlock = false;
+        }
+        coorX = row;
+        coorY = col;
+        winCells.push([coorX, coorY]);
+        coorX += 1;
+        coorY += 1;
+        while(coorX <= Config.brdSize - 1 && coorY <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
+            countMainDiagonal += 1;
+            winCells.push([coorX, coorY]);
+            coorX += 1;
+            coorY += 1;
+        }
+        if (coorX <= Config.brdSize - 1 && coorY <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
+            isBlock = false;
+        }
+        coorX = row;
+        coorY = col;
+        if (isBlock === false && countMainDiagonal >= 5) return winCells;
+
+        // Check skew diagonal
+        isBlock = true;
+        winCells = [];
+        coorX -= 1;
+        coorY += 1;
+        while(coorX >= 0 && coorY >= 0 && squares[coorX][coorY] === user) {
+            countSkewDiagonal += 1;
+            winCells.push([coorX, coorY]);
+            coorX -= 1;
+            coorY += 1;
+        }
+        if (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] !== rival) {
+            isBlock = false;
+        }
+        coorX = row;
+        coorY = col;
+        winCells.push([coorX, coorY]);
+        coorX += 1;
+        coorY -= 1;
+        while(coorX <= Config.brdSize - 1 && coorY <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
+            countSkewDiagonal += 1;
+            winCells.push([coorX, coorY]);
+            coorX += 1;
+            coorY -= 1;
+        }
+        if (coorX <= Config.brdSize - 1 && coorY <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
+            isBlock = false;
+        }
+        if (isBlock === false && countSkewDiagonal >= 5) return winCells;
+
+        return null;
+    }
+
+    changeSortMode() {
+        const { accendingMode } = this.state;
+        this.setState({
+            accendingMode: !accendingMode
+        })
+    }
+
+    handleClick(row, col) {      
+        const { stepNumber } = this.state;
+        const { history } = this.state;
+        const newHistory = history.slice(0, stepNumber + 1);
+        const current = newHistory[newHistory.length - 1];
+
+        // Attention: Slice does not work properly with 2D array
+        const squares = JSON.parse(JSON.stringify(current.squares));
+
+        // It should be named 'curMove'
+        const { nextMove } = this.state;
+        const { winCells } = this.state;
+        const curMove = nextMove;
+
+        if (winCells == null && squares[row][col] == null) {
+
+            // Assign value
+            squares[row][col] = curMove;
+
+            this.setState({
+                history: newHistory.concat([{
+                    x: row,
+                    y: col,
+                    squares
+                }]),
+                stepNumber: newHistory.length,
+                nextMove: (curMove === Config.xPlayer) ? Config.oPlayer : Config.xPlayer,
+                winCells: this.checkWin(row, col, curMove, newHistory.length - 1)
+            });
+        }
+    }
+
+    jumpTo(step)
+    {
+        const {history} = this.state;
+        const target = history[step];
+        const curMove = step % 2 === 0 ? Config.oPlayer : Config.xPlayer;
+        const nextMove = step % 2 !== 0 ? Config.oPlayer : Config.xPlayer;
+
+        this.setState({
+            stepNumber: step,
+            nextMove,
+            winCells: this.checkWin(target.x, target.y, curMove, step)
+        })
+    }
+
+    render() {
+        const { history } = this.state;
+        const { stepNumber } = this.state;
+        const current = history[stepNumber];
+        const { nextMove } = this.state;
+        const { winCells } = this.state;
+        const { accendingMode } = this.state;
+
+        const moves = [];
         history.map((step, move) => {
-            const content = move ? "Đến bước thứ #"
-            + Config.makeTwoDigits(move) + ": (" + Config.makeTwoDigits(history[move].x) + ", " + Config.makeTwoDigits(history[move].y) + ")"
+            const content = move ? `Đến bước thứ #${
+             Config.makeTwoDigits(move)  }: (${  Config.makeTwoDigits(history[move].x)  }, ${  Config.makeTwoDigits(history[move].y)  })`
             : "Chơi lại từ đầu !";
-            const className = (move == stepNumber) ? "board-button-bold" : "board-button";
+            const className = (move === stepNumber) ? "board-button-bold" : "board-button";
             
             // Get current move
-            var current = (
+            const currentMove = (
+                // eslint-disable-next-line react/no-array-index-key
                 <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}
+                    <button type="button" onClick={() => this.jumpTo(move)}
                             className={className}>{content}</button>
                 </li>
             )
 
             // Push head or tail depends on sort mode
-            if (this.state.accendingMode) {
-                moves.push(current);
+            if (accendingMode) {
+                moves.push(currentMove);
             }
             else {
                 moves.splice(0, 0, current);
             }
+
+            return moves;
         })
 
-        const sortMode = this.state.accendingMode ? "Nước đi tăng dần" : "Nước đi giảm dần";
+        const sortMode = accendingMode ? "Nước đi tăng dần" : "Nước đi giảm dần";
 
         return (
             <div className="App">
 				<header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
-					<Status nextMove={nextMove} winCells={winCells}></Status>
-                    <div class="board-game">
-                        <button className="function-button" onClick={() => this.changeSortMode()}><b>{sortMode}</b></button>
+					<Status nextMove={nextMove} winCells={winCells} />
+                    <div className="board-game">
+                        <button type="button" className="function-button" onClick={() => this.changeSortMode()}><b>{sortMode}</b></button>
                         <div>
                             <Board winCells={winCells}
                                     squares={current.squares}
-                                    handleClick={(i, j) => this.handleClick(i, j)}></Board>
+                                    handleClick={(i, j) => this.handleClick(i, j)} />
                         </div>
                         <div>
                             <ol>{moves}</ol>
@@ -73,172 +268,6 @@ class Game extends Component {
 				</header>
             </div>
         );
-    }
-
-    changeSortMode() {
-        this.setState({
-            accendingMode: !this.state.accendingMode
-        })
-    }
-
-    handleClick(row, col) {      
-        const history = this.state.history.slice(0, this.state.stepNumber + 1);
-        const current = history[history.length - 1];
-
-        // Attention: Slice does not work properly with 2D array
-        const squares = JSON.parse(JSON.stringify(current.squares));
-
-        // It should be named 'curMove'
-        const curMove = this.state.nextMove;
-        const winCells = this.state.winCells;
-
-        if (winCells == null && squares[row][col] == null) {
-
-            // Assign value
-            squares[row][col] = curMove;
-
-            // Update next move
-            var nextMove = curMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
-
-            this.setState({
-                history: history.concat([{
-                    x: row,
-                    y: col,
-                    squares: squares
-                }]),
-                stepNumber: history.length,
-                nextMove: nextMove,
-                winCells: this.checkWin(row, col, curMove, history.length - 1)
-            });
-        }
-    }
-
-    jumpTo(step)
-    {
-        const history = this.state.history;
-        const target = history[step];
-        const curMove = step % 2 == 0 ? Config.oPlayer : Config.xPlayer;
-        const nextMove = step % 2 != 0 ? Config.oPlayer : Config.xPlayer;
-
-        this.setState({
-            stepNumber: step,
-            nextMove: nextMove,
-            winCells: this.checkWin(target.x, target.y, curMove, step)
-        })
-    }
-
-    checkWin(row, col, user, step) {
-
-        if (step == 0) {
-            return null;
-        }
-
-        const history = this.state.history;
-        const current = history[step];
-        const squares = current.squares.slice();
-
-        // Get coordinates
-        var coorX = row;
-        var coorY = col;
- 
-        var countCol = 1;
-        var countRow = 1;
-        var countMainDiagonal = 1;
-        var countSkewDiagonal = 1;
-        var isBlock;
-        var rival = (user === Config.xPlayer) ? Config.oPlayer : Config.xPlayer;
- 
-        // Check col
-        isBlock = true;
-        var win_cells = [];
-        while(--coorX >= 0 && squares[coorX][coorY] === user) {
-            countCol++;
-            win_cells.push([coorX, coorY]);
-        }
-        if (coorX >= 0 && squares[coorX][coorY] !== rival) {
-            isBlock = false;
-        }
-        coorX = row;
-        win_cells.push([coorX, coorY]);
-        while(++coorX <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
-            countCol++;
-            win_cells.push([coorX, coorY]);
-        }
-        if (coorX <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
-            isBlock = false;
-        }
-        coorX = row;
-        if (isBlock === false && countCol >= 5) return win_cells;
- 
-        // Check row
-        isBlock = true;
-        win_cells = [];
-        while(--coorY >= 0 && squares[coorX][coorY] === user) {
-            countRow++;
-            win_cells.push([coorX, coorY]);
-        }
-        if (coorY >= 0 && squares[coorX][coorY] !== rival) {
-            isBlock = false;
-        }
-        coorY = col;
-        win_cells.push([coorX, coorY]);
-        while(++coorY <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
-            countRow++;
-            win_cells.push([coorX, coorY]);
-        }
-        if (coorY <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
-            isBlock = false;
-        }
-        coorY = col;
-        if (isBlock === false && countRow >= 5) return win_cells;
-
-        // Check main diagonal
-        isBlock = true;
-        win_cells = [];
-        while(--coorX >= 0 && --coorY >= 0 && squares[coorX][coorY] === user) {
-            countMainDiagonal++;
-            win_cells.push([coorX, coorY]);
-        }
-        if (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] !== rival) {
-            isBlock = false;
-        }
-        coorX = row;
-        coorY = col;
-        win_cells.push([coorX, coorY]);
-        while(++coorX <= Config.brdSize - 1 && ++coorY <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
-            countMainDiagonal++;
-            win_cells.push([coorX, coorY]);
-        }
-        if (coorX <= Config.brdSize - 1 && coorY <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
-            isBlock = false;
-        }
-        coorX = row;
-        coorY = col;
-        if (isBlock === false && countMainDiagonal >= 5) return win_cells;
-
-        // Check skew diagonal
-        isBlock = true;
-        win_cells = [];
-        while(--coorX >= 0 && ++coorY >= 0 && squares[coorX][coorY] === user) {
-            countSkewDiagonal++;
-            win_cells.push([coorX, coorY]);
-        }
-        if (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] !== rival) {
-            isBlock = false;
-        }
-        coorX = row;
-        coorY = col;
-        win_cells.push([coorX, coorY]);
-        while(++coorX <= Config.brdSize - 1 && --coorY <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
-            countSkewDiagonal++;
-            win_cells.push([coorX, coorY]);
-        }
-        if (coorX <= Config.brdSize - 1 && coorY <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
-            isBlock = false;
-        }
-        if (isBlock === false && countSkewDiagonal >= 5) return win_cells;
-
-        return null;
     }
 }
 

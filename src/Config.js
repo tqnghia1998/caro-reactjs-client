@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import {Component} from 'react';
 
 class Config extends Component {
     static brdSize = 20;
@@ -13,7 +13,7 @@ class Config extends Component {
     };
 
     static makeTwoDigits(src) {
-        return (src < 10 ? `0${  src}` : src)
+        return (src < 10 ? `0${ src }` : src)
     }
 }
 
