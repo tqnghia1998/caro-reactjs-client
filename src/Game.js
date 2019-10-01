@@ -257,9 +257,9 @@ class Game extends Component {
                     <div className="board-game">
                         <button type="button" className="function-button" onClick={() => this.changeSortMode()}><b>{sortMode}</b></button>
                         <div>
-                            <Board winCells={winCells}
+                            <Board  winCells={winCells}
                                     squares={current.squares}
-                                    handleClick={(i, j) => this.handleClick(i, j)} />
+                                    handleClick={(i, j) => this.handleClick(i, j)}/>
                         </div>
                         <div>
                             <ol>{moves}</ol>
