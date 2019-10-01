@@ -30,7 +30,7 @@ function Board (props) {
                 key={squareKey}
             />);
         }
-        rows.push(<div className="board-row" key={i}>{cols}</div>);
+        rows.push(<div className='board-row' key={i}>{cols}</div>);
     }
     return rows;
 }

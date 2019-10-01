@@ -224,14 +224,14 @@ class Game extends Component {
         history.map((step, move) => {
             const content = move ? `Đến bước thứ #${
              Config.makeTwoDigits(move)  }: (${  Config.makeTwoDigits(history[move].x)  }, ${  Config.makeTwoDigits(history[move].y)  })`
-            : "Chơi lại từ đầu !";
-            const className = (move === stepNumber) ? "board-button-bold" : "board-button";
+            : `Chơi lại từ đầu !`;
+            const className = (move === stepNumber) ? `board-button-bold` : `board-button`;
             
             // Get current move
             const currentMove = (
                 // eslint-disable-next-line react/no-array-index-key
                 <li key={move}>
-                    <button type="button" onClick={() => this.jumpTo(move)}
+                    <button type='button' onClick={() => this.jumpTo(move)}
                             className={className}>{content}</button>
                 </li>
             )
@@ -241,21 +241,21 @@ class Game extends Component {
                 moves.push(currentMove);
             }
             else {
-                moves.splice(0, 0, current);
+                moves.splice(0, 0, currentMove);
             }
 
             return moves;
         })
 
-        const sortMode = accendingMode ? "Nước đi tăng dần" : "Nước đi giảm dần";
+        const sortMode = accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
 
         return (
-            <div className="App">
-				<header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
+            <div className='App'>
+				<header className='App-header'>
+                    <img src={logo} className='App-logo' alt='logo' />
 					<Status nextMove={nextMove} winCells={winCells} />
-                    <div className="board-game">
-                        <button type="button" className="function-button" onClick={() => this.changeSortMode()}><b>{sortMode}</b></button>
+                    <div className='board-game'>
+                        <button type='button' className='function-button' onClick={() => this.changeSortMode()}><b>{sortMode}</b></button>
                         <div>
                             <Board  winCells={winCells}
                                     squares={current.squares}

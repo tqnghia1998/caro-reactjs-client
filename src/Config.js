@@ -3,13 +3,13 @@ import {Component} from 'react';
 class Config extends Component {
     static brdSize = 20;
 
-    static xPlayer = "X";
+    static xPlayer = 'X';
 
-    static oPlayer = "O";
+    static oPlayer = 'O';
 
     static plColor = {
-        X: "red",
-        O: "blue"
+        X: 'red',
+        O: 'blue'
     };
 
     static makeTwoDigits(src) {
