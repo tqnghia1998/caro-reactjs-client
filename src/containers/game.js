@@ -12,14 +12,15 @@ import '../css/Game.css';
 
 class Game extends Component {
 
-    checkWin(row, col, user, step) {
+    checkWin(row, col, user, stepNumber) {
 
-        if (step === 0) {
+        if (stepNumber === 0) {
             return null;
         }
 
-        const {history} = this.state;
-        const current = history[step];
+        const { attrs } = this.props;
+        const { history } = attrs;
+        const current = history[stepNumber];
         const squares = current.squares.slice();
 
         // Get coordinates
@@ -208,13 +209,6 @@ class Game extends Component {
 
         const current = history[stepNumber];
 
-        // eslint-disable-next-line no-alert
-        // eslint-disable-next-line no-undef
-        // alert(stepNumber);
-        // eslint-disable-next-line no-alert
-        // eslint-disable-next-line no-undef
-        // alert(history.length);
-
         const sortMode = accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
         const moves = [];
 
@@ -267,12 +261,14 @@ class Game extends Component {
     }
 }
 
+// Connect variables
 function mapStateToProps(state) {
     return {
         attrs: state.gameReducers
     };
 }
 
+// Connect functions
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
