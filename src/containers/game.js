@@ -208,7 +208,6 @@ class Game extends Component {
         const { accendingMode } = attrs;
 
         const current = history[stepNumber];
-
         const sortMode = accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
         const moves = [];
 
@@ -224,7 +223,8 @@ class Game extends Component {
             const currentMove = (
                 // eslint-disable-next-line react/no-array-index-key
                 <li key={move}>
-                    <button type='button' className={className}>{content}</button>
+                    <button type='button' onClick={() => this.jumpTo(move)}
+                        className={className}>{content}</button>
                 </li>
             )
 
