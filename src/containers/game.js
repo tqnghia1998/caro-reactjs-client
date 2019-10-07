@@ -1,27 +1,16 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import actionClick from '../actions/actionClick';
 import actionChangeSort from '../actions/actionChangeSort';
+import actionJumpTo from '../actions/actionJumpTo';
 import Board from '../components/board';
 import Config from '../constants/configs';
 import Status from '../components/status';
-import '../css/Game.css';
 import logo from '../logo.svg';
+import '../css/Game.css';
 
 class Game extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            history: [{
-                x: null,
-                y: null,
-                squares: Array(Config.brdSize).fill(null).map(() => { return Array(Config.brdSize).fill(null)})
-            }],
-            nextMove: Config.xPlayer,
-            stepNumber: 0,
-            winCells: null
-        }
-    }
 
     checkWin(row, col, user, step) {
 
@@ -161,67 +150,79 @@ class Game extends Component {
         return null;
     }
 
-    handleClick(row, col) {      
-        const { stepNumber } = this.state;
-        const { history } = this.state;
+    handleClick(row, col) {
+        const { actions } = this.props
+        const { attrs } = this.props;
+        const { stepNumber } = attrs;
+        const { history } = attrs;
+        const { nextMove } = attrs;
+        const { winCells } = attrs;
+
+        // It should be named 'curMove'
+        const curMove = nextMove;
         const newHistory = history.slice(0, stepNumber + 1);
         const current = newHistory[newHistory.length - 1];
 
         // Attention: Slice does not work properly with 2D array
         const squares = JSON.parse(JSON.stringify(current.squares));
 
-        // It should be named 'curMove'
-        const { nextMove } = this.state;
-        const { winCells } = this.state;
-        const curMove = nextMove;
-
         if (winCells == null && squares[row][col] == null) {
 
             // Assign value
             squares[row][col] = curMove;
+            const _nextMove = curMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
+            const _winCells = this.checkWin(row, col, curMove, newHistory.length - 1);
+            const _history  = newHistory.concat([{
+                x: row,
+                y: col,
+                squares
+            }]);
 
-            this.setState({
-                history: newHistory.concat([{
-                    x: row,
-                    y: col,
-                    squares
-                }]),
-                stepNumber: newHistory.length,
-                nextMove: (curMove === Config.xPlayer) ? Config.oPlayer : Config.xPlayer,
-                winCells: this.checkWin(row, col, curMove, newHistory.length - 1)
-            });
+            // Call action
+            actions.actionClick(_history, _nextMove, _winCells);
         }
     }
 
-    jumpTo(step)
-    {
-        const {history} = this.state;
-        const target = history[step];
-        const curMove = step % 2 === 0 ? Config.oPlayer : Config.xPlayer;
-        const nextMove = step % 2 !== 0 ? Config.oPlayer : Config.xPlayer;
+    jumpTo(stepNumber) {
+        const { actions } = this.props
+        const { attrs } = this.props;
+        const { history } = attrs;
 
-        this.setState({
-            stepNumber: step,
-            nextMove,
-            winCells: this.checkWin(target.x, target.y, curMove, step)
-        })
+        const target = history[stepNumber];
+        const curMove = stepNumber % 2 === 0 ? Config.oPlayer : Config.xPlayer;
+        const nextMove = stepNumber % 2 !== 0 ? Config.oPlayer : Config.xPlayer;
+        const winCells = this.checkWin(target.x, target.y, curMove, stepNumber);
+
+        // Call action
+        actions.actionJumpTo(stepNumber, nextMove, winCells);
     }
 
     render() {
-        const { history } = this.state;
-        const { stepNumber } = this.state;
-        const current = history[stepNumber];
-        const { nextMove } = this.state;
-        const { winCells } = this.state;
-
-        // eslint-disable-next-line react/destructuring-assignment
-        const { attrs } = this.props;
         const { actions } = this.props
+        const { attrs } = this.props;
+        const { history } = attrs;
+        const { stepNumber } = attrs;
+        const { nextMove } = attrs;
+        const { winCells } = attrs;
+        const { accendingMode } = attrs;
 
+        const current = history[stepNumber];
+
+        // eslint-disable-next-line no-alert
+        // eslint-disable-next-line no-undef
+        // alert(stepNumber);
+        // eslint-disable-next-line no-alert
+        // eslint-disable-next-line no-undef
+        // alert(history.length);
+
+        const sortMode = accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
         const moves = [];
+
         history.map((step, move) => {
             const content = move ? `Đến bước thứ #${
-             Config.makeTwoDigits(move)  }: (${  Config.makeTwoDigits(history[move].x)  }, ${  Config.makeTwoDigits(history[move].y)  })`
+                Config.makeTwoDigits(move)}:
+                (${Config.makeTwoDigits(history[move].x)},
+                ${  Config.makeTwoDigits(history[move].y)})`
             : `Chơi lại từ đầu !`;
             const className = (move === stepNumber) ? `board-button-bold` : `board-button`;
             
@@ -229,13 +230,12 @@ class Game extends Component {
             const currentMove = (
                 // eslint-disable-next-line react/no-array-index-key
                 <li key={move}>
-                    <button type='button' onClick={() => this.jumpTo(move)}
-                            className={className}>{content}</button>
+                    <button type='button' className={className}>{content}</button>
                 </li>
             )
 
             // Push head or tail depends on sort mode
-            if (attrs.accendingMode) {
+            if (accendingMode) {
                 moves.push(currentMove);
             }
             else {
@@ -244,8 +244,6 @@ class Game extends Component {
 
             return moves;
         })
-
-        const sortMode = attrs.accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
 
         return (
             <div className='App'>
@@ -278,7 +276,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
-            actionChangeSort
+            actionClick,
+            actionChangeSort,
+            actionJumpTo
         }, dispatch)
     };
 }
