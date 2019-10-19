@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import actionClick from '../actions/actionClick';
 import actionChangeSort from '../actions/actionChangeSort';
 import actionJumpTo from '../actions/actionJumpTo';
-import Game from '../components/game';
+import Game from '../components/homepage/game';
 
 // Connect variables
 function mapStateToProps(state) {

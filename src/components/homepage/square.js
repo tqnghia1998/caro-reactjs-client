@@ -1,5 +1,6 @@
 import React from 'react';
-import Config from '../constants/configs';
+import Config from '../../constants/configs';
+import { Button } from 'react-bootstrap';
 
 function Square(props) {
     const { value } = props;
@@ -8,10 +9,10 @@ function Square(props) {
     const moveColor = value === Config.xPlayer ? Config.plColor.X : Config.plColor.O;
     const className = winCell === false ? 'square' : 'square-win';
     return (
-        <button type='button' className={className}
+        <Button className={className} variant="dark"
                 onClick={() => props.handleClick(props.row, props.col)}>
             <font color={moveColor}>{value}</font>
-        </button>
+        </Button>
     );
 }
 

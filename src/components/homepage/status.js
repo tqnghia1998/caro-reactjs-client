@@ -1,5 +1,5 @@
 import React from 'react';
-import Config from '../constants/configs';
+import Config from '../../constants/configs';
 
 function Status(props) {
     const { winCells } = props;
@@ -13,7 +13,7 @@ function Status(props) {
         message = `Lượt đi kế tiếp: ${  props.nextMove}`;
     }
     return (
-        <div className='status'>{message}</div>
+        <div className='status'><b>{message}</b></div>
     )
 }
 

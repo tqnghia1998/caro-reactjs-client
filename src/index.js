@@ -2,7 +2,6 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Game from './containers/app';
 import * as serviceWorker from './serviceWorker';
 import rootReducers from './reducers/rootReducers';
 import {
@@ -10,7 +9,10 @@ import {
     Switch,
     Route,
     Link
-} from "react-router-dom";
+} from 'react-router-dom';
+import Game from './containers/homepage';
+import Login from './containers/login';
+import Register from './containers/register';
 import './css/index.css';
   
 
@@ -24,17 +26,17 @@ const appRoot = (
     <Router>
         <div>
             <Switch>
-                <Route path="/login">
+                <Route path='/login'>
                     <Provider store={store}>
-                        <></>
+                        <Login />
                     </Provider>
                 </Route>
-                <Route path="/register">
+                <Route path='/register'>
                     <Provider store={store}>
-                        <></>
+                        <Register />
                     </Provider>
                 </Route>
-                <Route path="/">
+                <Route path='/'>
                     <Provider store={store}>
                         <Game />
                     </Provider>

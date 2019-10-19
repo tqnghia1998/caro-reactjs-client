@@ -1,9 +1,10 @@
 import React from 'react';
-import Board from '../components/board';
-import Config from '../constants/configs';
-import Status from '../components/status';
-import logo from '../logo.svg';
-import '../css/Game.css';
+import { Button } from 'react-bootstrap';
+import Board from '../homepage/board';
+import Config from '../../constants/configs';
+import Status from '../homepage/status';
+import logo from '../../logo.svg';
+import '../../css/game.css';
 
 function Game(props) {
 
@@ -202,19 +203,19 @@ function Game(props) {
     const moves = [];
 
     history.map((step, move) => {
-        const content = move ? `Đến bước thứ #${
+        const content = move ? `Đến bước #${
             Config.makeTwoDigits(move)}:
             (${Config.makeTwoDigits(history[move].x)},
             ${  Config.makeTwoDigits(history[move].y)})`
         : `Chơi lại từ đầu !`;
-        const className = (move === stepNumber) ? `board-button-bold` : `board-button`;
+        const variant = (move === stepNumber) ? `danger` : `success`;
         
         // Get current move
         const currentMove = (
             // eslint-disable-next-line react/no-array-index-key
             <li key={move}>
-                <button type='button' onClick={() => jumpTo(move)}
-                    className={className}>{content}</button>
+                <Button onClick={() => jumpTo(move)} variant={variant}
+                    className='board-button'>{content}</Button>
             </li>
         )
 
@@ -235,7 +236,10 @@ function Game(props) {
                 <img src={logo} className='App-logo' alt='logo' />
                 <Status nextMove={nextMove} winCells={winCells} />
                 <div className='board-game'>
-                    <button type='button' className='function-button' onClick={actions.actionChangeSort}><b>{sortMode}</b></button>
+                    <Button className='function-button'
+                            onClick={actions.actionChangeSort}>
+                        {sortMode}
+                    </Button>
                     <div>
                         <Board  winCells={winCells}
                                 squares={current.squares}

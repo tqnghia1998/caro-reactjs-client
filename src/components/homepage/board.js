@@ -1,6 +1,6 @@
 import React from 'react';
 import Square from './square';
-import Config from '../constants/configs';
+import Config from '../../constants/configs';
 
 function checkWinCell(winCells, row, col) {
     if (winCells == null) {

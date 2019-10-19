@@ -37,7 +37,7 @@ body {
 }
 
 body {
-  font: 14px "Century Gothic", Futura, sans-serif;
+  font: 14px 'Century Gothic', Futura, sans-serif;
 }
 
 ol, ul {
@@ -46,43 +46,47 @@ ol, ul {
 
 .board-row:after {
   clear: both;
-  content: "";
+  content: '';
   display: table;
 }
 
 .status {
-  font: 20px "Times New Roman", Futura, sans-serif;
+  font: 20px 'Courier New', Courier, monospace;
   margin-bottom: 20px;
 }
 
 .square {
   background: rgb(222, 222, 222);
-  border: 1px solid #999;
+  border: 1px solid #282c34;
   float: left;
-  font-size: 18px;
+  font-size: 25px;
   font-weight: bold;
-  line-height: 26px;
-  height: 26px;
-  margin-right: -1px;
+  line-height: 27px;
+  height: 27px;
+  margin-left: -1px;
   margin-top: -1px;
-  padding: 0;
+  margin-bottom: -1px;
+  padding: 0px;
   text-align: center;
-  width: 26px;
+  font-family: 'Courier New', Courier, monospace;
+  width: 27px;
 }
 
 .square-win {
-  background: rgb(254, 255, 178);
-  border: 1px solid #999;
+  background: rgb(245, 242, 67);
+  border: 1px solid #282c34;
   float: left;
-  font-size: 18px;
+  font-size: 25px;
   font-weight: bold;
-  line-height: 26px;
-  height: 26px;
-  margin-right: -1px;
+  line-height: 27px;
+  height: 27px;
+  margin-left: -1px;
   margin-top: -1px;
-  padding: 0;
+  margin-bottom: -1px;
+  padding: 0px;
   text-align: center;
-  width: 26px;
+  font-family: 'Courier New', Courier, monospace;
+  width: 27px;
 }
 
 .square:focus {
@@ -103,26 +107,19 @@ ol, ul {
 }
 
 .board-button {
-  font: 18px "Times New Roman", Futura, sans-serif;
+  font: 15px 'Courier New', Courier, monospace;
   height: 30px;
   width: 225px;
   text-align: left;
+  margin-bottom: 1px;
 }
 
 .function-button {
-  font: 18px "Times New Roman", Futura, sans-serif;
+  font: 15px 'Courier New', Courier, monospace;
   height: 30px;
   margin-right: 30px;
-  width: 160px;
+  width: 200;
   text-align: left;
-}
-
-.board-button-bold {
-  font: 18px "Times New Roman", Futura, sans-serif;
-  height: 30px;
-  width: 225px;
-  text-align: left;
-  font-weight: bold;
 }
 
 ol {
