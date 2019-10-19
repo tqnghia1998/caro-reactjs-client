@@ -2,10 +2,17 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './css/index.css';
 import Game from './containers/app';
 import * as serviceWorker from './serviceWorker';
 import rootReducers from './reducers/rootReducers';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+import './css/index.css';
+  
 
 // Initial state of store
 const initialState = {}
@@ -14,9 +21,27 @@ const initialState = {}
 const store = createStore(rootReducers, initialState);
 
 const appRoot = (
-    <Provider store={store}>
-        <Game />
-    </Provider>
+    <Router>
+        <div>
+            <Switch>
+                <Route path="/login">
+                    <Provider store={store}>
+                        <></>
+                    </Provider>
+                </Route>
+                <Route path="/register">
+                    <Provider store={store}>
+                        <></>
+                    </Provider>
+                </Route>
+                <Route path="/">
+                    <Provider store={store}>
+                        <Game />
+                    </Provider>
+                </Route>
+            </Switch>
+        </div>
+    </Router>
 )
 
 ReactDOM.render(appRoot, document.getElementById('root'));

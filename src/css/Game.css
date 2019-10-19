@@ -10,7 +10,7 @@ body {
   animation: App-logo-spin infinite 20s linear;
   height: 10vmin;
   pointer-events: none;
-  margin: 10px;
+  margin: 5px;
 }
 
 .App-header {
