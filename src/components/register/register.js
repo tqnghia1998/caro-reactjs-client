@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
-import { Link } from 'react-router-dom';    
-import logo from '../../logo.svg';
+import { Link } from 'react-router-dom';
 import '../../css/login.css';
 
 function Register(props) {

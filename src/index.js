@@ -7,8 +7,7 @@ import rootReducers from './reducers/rootReducers';
 import {
     BrowserRouter as Router,
     Switch,
-    Route,
-    Link
+    Route
 } from 'react-router-dom';
 import Game from './containers/homepage';
 import Login from './containers/login';

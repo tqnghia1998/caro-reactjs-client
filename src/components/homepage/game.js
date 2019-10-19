@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import Board from '../homepage/board';
 import Config from '../../constants/configs';
 import Status from '../homepage/status';
@@ -7,6 +7,87 @@ import logo from '../../logo.svg';
 import '../../css/game.css';
 
 function Game(props) {
+
+    const { actions } = props
+    const { history } = props;
+    const { stepNumber } = props;
+    const { nextMove } = props;
+    const { winCells } = props;
+    const { accendingMode } = props;
+
+    const current = history[stepNumber];
+    const sortMode = accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
+    const moves = [];
+
+    history.map((step, move) => {
+        const content = move ? `Lượt #${
+            Config.makeTwoDigits(move)}:
+            (${Config.makeTwoDigits(history[move].x)},${Config.makeTwoDigits(history[move].y)})`
+        : `Chơi lại từ đầu !`;
+        const variant = (move === stepNumber) ? `danger` : `success`;
+        
+        // Get current move
+        const currentMove = (
+            // eslint-disable-next-line react/no-array-index-key
+            <li key={move}>
+                <Button onClick={() => jumpTo(move)} variant={variant}
+                    className='board-button'>{content}</Button>
+            </li>
+        )
+
+        // Push head or tail depends on sort mode
+        if (accendingMode) {
+            moves.push(currentMove);
+        }
+        else {
+            moves.splice(0, 0, currentMove);
+        }
+
+        return moves;
+    })
+
+    return (
+        <div className='App'>
+            <header className='App-header'>
+                <img src={logo} className='App-logo' alt='logo' />
+                <Status nextMove={nextMove} winCells={winCells} />
+                <div className='board-game'>
+                    <div>
+                        <Card className='card'>
+                            <Card.Body className='card-body'>
+                                <Card.Title className='card-title'>Thông tin</Card.Title>
+                                <Card.Text className='card-text'>
+                                    Trịnh Quang Nghĩa
+                                </Card.Text>
+                                <Card.Text className='card-text'>
+                                    Số trận thắng: 100
+                                </Card.Text>
+                                <Card.Text className='card-text'>
+                                    Số trận thua: 10
+                                </Card.Text>
+                                <Button className='logout-button' variant='info'>Đăng xuất</Button>
+                            </Card.Body>
+                        </Card>
+                        <br></br>
+                        <Button className='function-button'
+                                onClick={actions.actionChangeSort}>
+                            {sortMode}
+                        </Button>
+                    </div>
+                    
+                    <div>
+                        <Board  winCells={winCells}
+                                squares={current.squares}
+                                handleClick={(i, j) => handleClick(i, j)}/>
+                    </div>
+                    <div>
+                        <ol>{moves}</ol>
+                    </div>
+                </div>
+            </header>
+        </div>
+    );
+
 
     function checkWin(row, col, user, stepNumber) {
 
@@ -190,68 +271,6 @@ function Game(props) {
         // Call action
         actions.actionJumpTo(stepNumber, nextMove, winCells);
     }
-
-    const { actions } = props
-    const { history } = props;
-    const { stepNumber } = props;
-    const { nextMove } = props;
-    const { winCells } = props;
-    const { accendingMode } = props;
-
-    const current = history[stepNumber];
-    const sortMode = accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
-    const moves = [];
-
-    history.map((step, move) => {
-        const content = move ? `Đến bước #${
-            Config.makeTwoDigits(move)}:
-            (${Config.makeTwoDigits(history[move].x)},
-            ${  Config.makeTwoDigits(history[move].y)})`
-        : `Chơi lại từ đầu !`;
-        const variant = (move === stepNumber) ? `danger` : `success`;
-        
-        // Get current move
-        const currentMove = (
-            // eslint-disable-next-line react/no-array-index-key
-            <li key={move}>
-                <Button onClick={() => jumpTo(move)} variant={variant}
-                    className='board-button'>{content}</Button>
-            </li>
-        )
-
-        // Push head or tail depends on sort mode
-        if (accendingMode) {
-            moves.push(currentMove);
-        }
-        else {
-            moves.splice(0, 0, currentMove);
-        }
-
-        return moves;
-    })
-
-    return (
-        <div className='App'>
-            <header className='App-header'>
-                <img src={logo} className='App-logo' alt='logo' />
-                <Status nextMove={nextMove} winCells={winCells} />
-                <div className='board-game'>
-                    <Button className='function-button'
-                            onClick={actions.actionChangeSort}>
-                        {sortMode}
-                    </Button>
-                    <div>
-                        <Board  winCells={winCells}
-                                squares={current.squares}
-                                handleClick={(i, j) => handleClick(i, j)}/>
-                    </div>
-                    <div>
-                        <ol>{moves}</ol>
-                    </div>
-                </div>
-            </header>
-        </div>
-    );
 }
 
-export default Game
+export default Game;

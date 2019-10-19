@@ -109,7 +109,7 @@ ol, ul {
 .board-button {
   font: 15px 'Courier New', Courier, monospace;
   height: 30px;
-  width: 225px;
+  width: 200px;
   text-align: left;
   margin-bottom: 1px;
 }
@@ -118,7 +118,7 @@ ol, ul {
   font: 15px 'Courier New', Courier, monospace;
   height: 30px;
   margin-right: 30px;
-  width: 200;
+  width: 200px;
   text-align: left;
 }
 
@@ -134,4 +134,33 @@ ol {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+.card {
+  width: 200px;
+}
+
+.card-body {
+  padding: 0px;
+  background: rgb(222, 222, 222);
+}
+
+.card-title {
+  margin-top: 10px;
+  font: bold 18px 'Courier New', Courier, monospace;
+  color: rgb(51, 53, 172);
+}
+
+.card-text {
+  font: bold 13px 'Courier New', Courier, monospace;
+  color: black;
+  margin-bottom: 5px;
+}
+
+.logout-button {
+  font: 15px 'Courier New', Courier, monospace;
+  height: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: auto;
 }
