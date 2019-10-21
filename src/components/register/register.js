@@ -10,13 +10,23 @@ function Register(props) {
     const [email, setEmail] = useState('');
     const [fullname, setFullname] = useState('');
 
+    const { message } = props;
+    const { actions } = props;
   
     function validateForm() {
-      return email.length > 0 && password.length > 0;
+        const { isFetching } = props;
+
+        return !isFetching && email.length > 0 && password.length > 0;
     }
   
     function handleSubmit(event) {
-      event.preventDefault();
+        event.preventDefault();
+        if (password !== repassword) {
+            alert('Mật khẩu không trùng với nhau');
+        }
+        else {
+            actions.fetchRegister(username, password, fullname, email);
+        }
     }
   
     return (
@@ -26,7 +36,7 @@ function Register(props) {
             </center>
             <form onSubmit={handleSubmit}>
 
-                <FormGroup controlId='username' bsSize='large'>
+                <FormGroup controlId='username'>
                     <FormLabel className='form-label'>Tên đăng nhập</FormLabel>
                     <FormControl
                         autoFocus
@@ -35,7 +45,7 @@ function Register(props) {
                         type='username'/>
                 </FormGroup>
 
-                <FormGroup controlId='password' bsSize='large'>
+                <FormGroup controlId='password'>
                     <FormLabel className='form-label'>Mật khẩu</FormLabel>
                     <FormControl
                         value={password}
@@ -44,7 +54,7 @@ function Register(props) {
                     />
                 </FormGroup>
 
-                <FormGroup controlId='repassword' bsSize='large'>
+                <FormGroup controlId='repassword'>
                     <FormLabel className='form-label'>Nhập lại mật khẩu</FormLabel>
                     <FormControl
                         value={repassword}
@@ -53,7 +63,7 @@ function Register(props) {
                     />
                 </FormGroup>
 
-                <FormGroup controlId='email' bsSize='large'>
+                <FormGroup controlId='email'>
                     <FormLabel className='form-label'>E-mail cá nhân</FormLabel>
                     <FormControl
                         value={email}
@@ -62,7 +72,7 @@ function Register(props) {
                     />
                 </FormGroup>
 
-                <FormGroup controlId='fullname' bsSize='large'>
+                <FormGroup controlId='fullname'>
                     <FormLabel className='form-label'>Họ tên</FormLabel>
                     <FormControl
                         value={fullname}
@@ -73,12 +83,13 @@ function Register(props) {
 
                 <br></br>
 
-                <Button block bsSize='large' disabled={!validateForm()} type='submit'>
+                <Button block disabled={!validateForm()} type='submit'>
                     Đăng ký
                 </Button>
             </form>
             <center className='link'>
-                <Link to='/login'>Đăng nhập</Link>
+                <Link to='/login'>Đăng nhập</Link><br></br><br></br>
+                <p className='status-login-small'>{message}</p>
             </center>
         </div>
     );

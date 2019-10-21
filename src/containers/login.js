@@ -6,6 +6,7 @@ import fetchLogin from '../actions/actionLogin';
 // Connect variables
 function mapStateToProps(state) {
     return {
+        isFetching: state.loginReducers.isFetching,
         message: state.loginReducers.message
     };
 }

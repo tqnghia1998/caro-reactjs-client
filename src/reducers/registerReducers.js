@@ -1,9 +1,9 @@
 import ActionType from '../constants/actionTypes';
 import Config from '../constants/configs';
 
-export default function handleLogin(state = Config.initialState, action) {
+export default function handleRegister(state = Config.initialState, action) {
     switch (action.type) {
-        case ActionType.LOGIN:
+        case ActionType.REGISTER:
             if (action.status === 'REQUEST') {
                 return {
                     ...state,
@@ -25,8 +25,7 @@ export default function handleLogin(state = Config.initialState, action) {
                     ...state,
                     isFetching: false,
                     didInvalidate: false,
-                    message: action.message,
-                    token: action.token
+                    message: action.message
                 }
             }
             else {
