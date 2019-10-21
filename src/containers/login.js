@@ -1,11 +1,12 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Login from '../components/login/login';
+import fetchLogin from '../actions/actionLogin';
 
 // Connect variables
 function mapStateToProps(state) {
     return {
-        
+        message: state.loginReducers.message
     };
 }
 
@@ -13,7 +14,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
-            
+            fetchLogin
         }, dispatch)
     };
 }

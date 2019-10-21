@@ -16,6 +16,26 @@ class Config extends Component {
     static makeTwoDigits(src) {
         return (src < 10 ? `0${ src }` : src)
     }
+
+    static initialState = {
+        isFetching: false,
+        didInvalidate: false,
+        message: null,
+        token: null,
+        data: {
+            history: [{
+                x: null,
+                y: null,
+                squares: Array(Config.brdSize).fill(null).map(() => {
+                    return Array(Config.brdSize).fill(null)
+                })
+            }],
+            nextMove: Config.xPlayer,
+            stepNumber: 0,
+            winCells: null,
+            accendingMode: false,
+        }
+    };
 }
 
 export default Config;

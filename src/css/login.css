@@ -21,6 +21,12 @@
     margin-bottom: 20px;
 }
 
+.status-login-small {
+    color: rgb(247, 115, 115);
+    font: bold 15px 'Courier New', Courier, monospace;
+    margin-bottom: 20px;
+}
+
 .link {
     margin: 15px;
     font: bold 15px 'Courier New', Courier, monospace;

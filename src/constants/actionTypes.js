@@ -7,6 +7,8 @@ class ActionType extends Component {
     static CHANG_SORT = "CHANGE_SORT";
 
     static JUMP_TO = "JUMP_TO";
+
+    static LOGIN = "LOGIN";
 }
 
 export default ActionType;

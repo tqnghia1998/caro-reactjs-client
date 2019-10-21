@@ -5,15 +5,19 @@ import logo from '../../logo.svg';
 import '../../css/login.css';
 
 function Login(props) {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    const { message } = props;
+    const { actions } = props;
   
     function validateForm() {
-      return email.length > 0 && password.length > 0;
+      return username.length > 0 && password.length > 0;
     }
   
     function handleSubmit(event) {
-      event.preventDefault();
+        event.preventDefault();
+        actions.fetchLogin(username, password);
     }
   
     return (
@@ -24,13 +28,13 @@ function Login(props) {
             </center>
             <form onSubmit={handleSubmit}>
 
-                <FormGroup controlId='email' bsSize='large'>
+                <FormGroup controlId='username' bsSize='large'>
                     <FormControl
                         autoFocus
                         placeholder='Tên đăng nhập'
-                        type='email'
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}/>
+                        type='username'
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}/>
                 </FormGroup>
 
                 <FormGroup controlId='password' bsSize='large'>
@@ -48,7 +52,8 @@ function Login(props) {
 
             </form>
             <center className='link'>
-                <Link to='/register' >Đăng ký tài khoản</Link>
+                <Link to='/register' >Đăng ký tài khoản</Link><br></br><br></br>
+                <p className='status-login-small'>{message}</p>
             </center>
         </div>
     );

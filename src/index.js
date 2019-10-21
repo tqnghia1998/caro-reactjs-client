@@ -1,5 +1,6 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
@@ -13,13 +14,14 @@ import Game from './containers/homepage';
 import Login from './containers/login';
 import Register from './containers/register';
 import './css/index.css';
-  
-
-// Initial state of store
-const initialState = {}
 
 // Create store
-const store = createStore(rootReducers, initialState);
+const store = createStore(
+    rootReducers,
+    applyMiddleware(
+        thunkMiddleware
+    )
+);
 
 const appRoot = (
     <Router>

@@ -60,10 +60,7 @@ function Game(props) {
                                     Trịnh Quang Nghĩa
                                 </Card.Text>
                                 <Card.Text className='card-text'>
-                                    Số trận thắng: 100
-                                </Card.Text>
-                                <Card.Text className='card-text'>
-                                    Số trận thua: 10
+                                    Tỷ lệ thắng: 100%
                                 </Card.Text>
                                 <Button className='logout-button' variant='info'>Đăng xuất</Button>
                             </Card.Body>

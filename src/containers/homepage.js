@@ -8,11 +8,11 @@ import Game from '../components/homepage/game';
 // Connect variables
 function mapStateToProps(state) {
     return {
-        history: state.gameReducers.history,
-        nextMove: state.gameReducers.nextMove,
-        stepNumber: state.gameReducers.stepNumber,
-        winCells: state.gameReducers.winCells,
-        accendingMode: state.gameReducers.accendingMode
+        history: state.gameReducers.data.history,
+        nextMove: state.gameReducers.data.nextMove,
+        stepNumber: state.gameReducers.data.stepNumber,
+        winCells: state.gameReducers.data.winCells,
+        accendingMode: state.gameReducers.data.accendingMode
     };
 }
 
