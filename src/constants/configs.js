@@ -18,10 +18,16 @@ class Config extends Component {
     }
 
     static initialState = {
+
+        // This section is for login & register
         isFetching: false,
-        didInvalidate: false,
         message: null,
+
+        // This section & isFetching are for getting info
+        didInvalidate: false,
         userInfo: null,
+
+        // This section is for game play
         data: {
             history: [{
                 x: null,
