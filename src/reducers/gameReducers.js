@@ -20,7 +20,7 @@ export default function handleGame(state = Config.initialState, action) {
                 ...state,
                 data: {
                     ...state.data,
-                    accendingMode: !state.accendingMode
+                    accendingMode: !state.data.accendingMode
                 }
             };
         

@@ -20,6 +20,8 @@ function Game(props) {
     const sortMode = accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
     const moves = [];
 
+    console.log("CHANGECHANGE");
+
     history.map((step, move) => {
         const content = move ? `Lượt #${
             Config.makeTwoDigits(move)}:
