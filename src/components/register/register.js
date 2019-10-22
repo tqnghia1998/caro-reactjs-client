@@ -25,7 +25,7 @@ function Register(props) {
             alert('Mật khẩu không trùng với nhau');
         }
         else {
-            actions.fetchRegister(username, password, fullname, email);
+            actions.fetchRegister(username, password, email, fullname);
         }
     }
   
