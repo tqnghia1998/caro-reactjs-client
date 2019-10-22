@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import '../../css/login.css';
+import '../login/css/login.css';
 
 function Register(props) {
     const [username, setUsername] = useState('');
