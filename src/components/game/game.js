@@ -1,19 +1,20 @@
 import React from 'react';
 import { Button, Card } from 'react-bootstrap';
-import Board from '../homepage/board';
+import Board from './board';
 import Config from '../../constants/configs';
-import Status from '../homepage/status';
+import Status from './status';
 import logo from '../../logo.svg';
 import '../../css/game.css';
 
 function Game(props) {
-
-    const { actions } = props
+    const { actions } = props;
     const { history } = props;
     const { stepNumber } = props;
     const { nextMove } = props;
     const { winCells } = props;
     const { accendingMode } = props;
+    const { userInfo } = props;
+    const { fullname } = userInfo;
 
     const current = history[stepNumber];
     const sortMode = accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
@@ -57,12 +58,9 @@ function Game(props) {
                             <Card.Body className='card-body'>
                                 <Card.Title className='card-title'>Thông tin</Card.Title>
                                 <Card.Text className='card-text'>
-                                    Trịnh Quang Nghĩa
+                                    {fullname}
                                 </Card.Text>
-                                <Card.Text className='card-text'>
-                                    Tỷ lệ thắng: 100%
-                                </Card.Text>
-                                <Button className='logout-button' variant='info'>Đăng xuất</Button>
+                                <Button className='logout-button' variant='info' onClick={() => logOut()}>Đăng xuất</Button>
                             </Card.Body>
                         </Card>
                         <br></br>
@@ -85,6 +83,10 @@ function Game(props) {
         </div>
     );
 
+    function logOut() {
+        localStorage.setItem('token', null);
+        window.location.href = '/login';
+    }
 
     function checkWin(row, col, user, stepNumber) {
 

@@ -1,28 +1,31 @@
 import ActionType from '../constants/actionTypes';
 import Config from '../constants/configs';
 
-export default function handleRegister(state = Config.initialState, action) {
+export default function handleGetInfo(state = Config.initialState, action) {
     switch (action.type) {
-        case ActionType.REGISTER:
+        case ActionType.GET_INFO:
             if (action.status === 'REQUEST') {
                 return {
                     ...state,
                     isFetching: true,
-                    message: action.message
+                    didInvalidate: false,
+                    userInfo: null,
                 }
             }
             else if (action.status === 'FAILED') {
                 return {
                     ...state,
                     isFetching: false,
-                    message: action.message
+                    didInvalidate: true,
+                    userInfo: null
                 }
             }
             else if (action.status === 'SUCCESS') {
                 return {
                     ...state,
                     isFetching: false,
-                    message: action.message
+                    didInvalidate: false,
+                    userInfo: action.userInfo
                 }
             }
             else {

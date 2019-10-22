@@ -1,12 +1,11 @@
 import fetch from 'cross-fetch';
 import ActionType from '../constants/actionTypes';
 
-export function actionLogin(status, message, token) {
+export function actionLogin(status, message) {
     return {
         type: ActionType.LOGIN,
         status,
-        message,
-        token
+        message
     };
 }
 
@@ -36,7 +35,10 @@ export default function fetchLogin(username, password) {
         )
         .then(json => {
             if (json.token) {
-                dispatch(actionLogin('SUCCESS', 'Đăng nhập thành công', json.token));
+
+                // Redirect immediately, no need to dispatch SUCCESS action
+                localStorage.setItem('token', json.token);
+                window.location.href = '/';
             }
             else {
                 dispatch(actionLogin('FAILED', json.message));

@@ -10,7 +10,7 @@ import {
     Switch,
     Route
 } from 'react-router-dom';
-import Game from './containers/homepage';
+import Homepage from './containers/homepage';
 import Login from './containers/login';
 import Register from './containers/register';
 import './css/index.css';
@@ -39,7 +39,7 @@ const appRoot = (
                 </Route>
                 <Route path='/'>
                     <Provider store={store}>
-                        <Game />
+                        <Homepage />
                     </Provider>
                 </Route>
             </Switch>
@@ -53,3 +53,5 @@ ReactDOM.render(appRoot, document.getElementById('root'));
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+export default store;

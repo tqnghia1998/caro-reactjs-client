@@ -13,6 +13,13 @@ body {
   margin: 5px;
 }
 
+.App-logo-big {
+  animation: App-logo-spin infinite 20s linear;
+  height: 50vmin;
+  pointer-events: none;
+  margin: 5px;
+}
+
 .App-header {
   background-color: #282c34;
   display: flex;
@@ -51,6 +58,7 @@ ol, ul {
 }
 
 .status {
+  color: white;
   font: 20px 'Courier New', Courier, monospace;
   margin-bottom: 20px;
 }
@@ -163,4 +171,8 @@ ol {
   margin-top: 10px;
   margin-bottom: 10px;
   width: auto;
+}
+
+.invisible-link {
+  width: 10px;
 }

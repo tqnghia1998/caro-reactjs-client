@@ -21,7 +21,7 @@ class Config extends Component {
         isFetching: false,
         didInvalidate: false,
         message: null,
-        token: null,
+        userInfo: null,
         data: {
             history: [{
                 x: null,

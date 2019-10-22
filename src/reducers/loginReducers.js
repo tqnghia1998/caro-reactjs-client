@@ -8,7 +8,6 @@ export default function handleLogin(state = Config.initialState, action) {
                 return {
                     ...state,
                     isFetching: true,
-                    didInvalidate: false,
                     message: action.message
                 }
             }
@@ -16,7 +15,6 @@ export default function handleLogin(state = Config.initialState, action) {
                 return {
                     ...state,
                     isFetching: false,
-                    didInvalidate: true,
                     message: action.message
                 }
             }
@@ -24,9 +22,7 @@ export default function handleLogin(state = Config.initialState, action) {
                 return {
                     ...state,
                     isFetching: false,
-                    didInvalidate: false,
-                    message: action.message,
-                    token: action.token
+                    message: action.message
                 }
             }
             else {

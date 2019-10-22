@@ -11,6 +11,8 @@ class ActionType extends Component {
     static LOGIN = 'LOGIN';
 
     static REGISTER = 'REGISTER';
+
+    static GET_INFO = 'GET_INFO';
 }
 
 export default ActionType;

@@ -12,7 +12,7 @@ export function actionRegister(status, message) {
 export default function fetchRegister(username, password, email, fullname) {
 
     return dispatch => {
-  
+
         dispatch(actionRegister('REQUEST', 'Xin vui lòng đợi...'));
 
         return fetch('https://btcn06-1612422.herokuapp.com/users/register', {
