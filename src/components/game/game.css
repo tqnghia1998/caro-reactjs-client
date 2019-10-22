@@ -1,0 +1,179 @@
+
+.App {
+  text-align: center;
+}
+
+body {
+  background-color: #282c34;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 10vmin;
+  pointer-events: none;
+  margin: 5px;
+}
+
+.App-logo-big {
+  animation: App-logo-spin infinite 20s linear;
+  height: 50vmin;
+  pointer-events: none;
+  margin: 5px;
+}
+
+.App-header {
+  background-color: #282c34;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: flex-start;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+body {
+  font: 14px 'Century Gothic', Futura, sans-serif;
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.board-row:after {
+  clear: both;
+  content: '';
+  display: table;
+}
+
+.status {
+  color: white;
+  font: 20px 'Courier New', Courier, monospace;
+  margin-bottom: 20px;
+}
+
+.square {
+  background: rgb(222, 222, 222);
+  border: 1px solid #282c34;
+  float: left;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 27px;
+  height: 27px;
+  margin-left: -1px;
+  margin-top: -1px;
+  margin-bottom: -1px;
+  padding: 0px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  width: 27px;
+}
+
+.square-win {
+  background: rgb(245, 242, 67);
+  border: 1px solid #282c34;
+  float: left;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 27px;
+  height: 27px;
+  margin-left: -1px;
+  margin-top: -1px;
+  margin-bottom: -1px;
+  padding: 0px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  width: 27px;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+.board-button {
+  font: 15px 'Courier New', Courier, monospace;
+  height: 30px;
+  width: 200px;
+  text-align: left;
+  margin-bottom: 1px;
+}
+
+.function-button {
+  font: 15px 'Courier New', Courier, monospace;
+  height: 30px;
+  margin-right: 30px;
+  width: 200px;
+  text-align: left;
+}
+
+ol {
+  font-size: 13px;
+  margin-left: 25px;
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 500px;
+}
+
+.board-game {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.card {
+  width: 200px;
+}
+
+.card-body {
+  padding: 0px;
+  background: rgb(222, 222, 222);
+}
+
+.card-title {
+  margin-top: 10px;
+  font: bold 18px 'Courier New', Courier, monospace;
+  color: rgb(51, 53, 172);
+}
+
+.card-text {
+  font: bold 13px 'Courier New', Courier, monospace;
+  color: black;
+  margin-bottom: 5px;
+}
+
+.logout-button {
+  font: 15px 'Courier New', Courier, monospace;
+  height: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: auto;
+}
+
+.invisible-link {
+  width: 10px;
+}

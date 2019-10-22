@@ -4,7 +4,7 @@ import Board from './board';
 import Config from '../../constants/configs';
 import Status from './status';
 import logo from '../../logo.svg';
-import '../../css/game.css';
+import './game.css';
 
 function Game(props) {
     const { actions } = props;
