@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, FormGroup, FormControl } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import logo from '../../logo.svg';
-import '../../css/login.css';
+import './css/login.css';
 
 function Login(props) {
     const [username, setUsername] = useState('');
