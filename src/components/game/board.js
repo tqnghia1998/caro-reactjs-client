@@ -17,22 +17,19 @@ function checkWinCell(winCells, row, col) {
 }
 
 function Board (props) {
-    const rows = [];
+    const squaresDiv = [];
     for (let i = 0; i < props.squares.length; i += 1) {
-        const cols = [];
         for (let j = 0; j < props.squares[i].length; j += 1) {
             const squareKey = i * Config.brdSize + j;
-            cols.push(<Square winCell={checkWinCell(props.winCells, i, j)}
+            squaresDiv.push(<Square winCell={checkWinCell(props.winCells, i, j)}
                 value={props.squares[i][j]}
                 row={i}
                 col={j}
                 handleClick={(row, col) => props.handleClick(row, col)}
-                key={squareKey}
-            />);
+                key={squareKey}/>);
         }
-        rows.push(<div className='board-row' key={i}>{cols}</div>);
     }
-    return rows;
+    return <div className='container-board'>{squaresDiv}</div>;
 }
 
 export default Board;

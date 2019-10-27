@@ -56,28 +56,36 @@ function Game(props) {
                 <Status nextMove={nextMove} winCells={winCells} />
                 <div className='board-game'>
                     <div>
+                        {/* Our infomation */}
                         <Card className='card'>
                             <Card.Body className='card-body'>
-                                <Card.Title className='card-title'>Thông tin</Card.Title>
-                                <Card.Text className='card-text'>
-                                    {fullname}
-                                </Card.Text>
+                                <Card.Title className='card-title'>Người chơi</Card.Title>
+                                <Card.Text className='card-text'>Nước đi: X</Card.Text>
+                                <Card.Text className='card-text'>{fullname}</Card.Text>
                                 <Button className='logout-button' variant='info' onClick={() => logOut()}>Đăng xuất</Button>
                             </Card.Body>
                         </Card>
                         <br></br>
-                        <Button className='function-button'
-                                onClick={actions.actionChangeSort}>
-                            {sortMode}
-                        </Button>
+                        {/* Rival infomation */}
+                        <Card className='card'>
+                            <Card.Body className='card-body'>
+                                <Card.Title className='card-title'>Đối thủ</Card.Title>
+                                <Card.Text className='card-text'>Nước đi: O</Card.Text>
+                                <Card.Text className='card-text'>{fullname}</Card.Text>
+                                <Button className='logout-button' variant='info' onClick={() => logOut()}>Đầu hàng</Button>&nbsp;
+                                <Button className='logout-button' variant='info' onClick={() => logOut()}>Xin hoà</Button>
+                            </Card.Body>
+                        </Card>
                     </div>
-                    
                     <div>
                         <Board  winCells={winCells}
                                 squares={current.squares}
                                 handleClick={(i, j) => handleClick(i, j)}/>
                     </div>
                     <div>
+                        {/* Change sort mode */}
+                        <Button className='change-sort-button' onClick={actions.actionChangeSort}>{sortMode}</Button>
+                        <br></br>
                         <ol>{moves}</ol>
                     </div>
                 </div>
