@@ -35,6 +35,13 @@ export default function handleGame(state = Config.initialState, action) {
                 }
             };
         
+        case ActionType.REQUEST:
+            return {
+                ...state,
+                isFetching: action.isRequesting,
+                message: action.message
+            }
+        
         default:
             return state;
     }

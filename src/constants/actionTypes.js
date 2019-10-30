@@ -17,6 +17,8 @@ class ActionType extends Component {
     static JOIN_ROOM = 'JOIN_ROOM';
 
     static CHAT = 'CHAT';
+
+    static REQUEST = 'REQUEST';
 }
 
 export default ActionType;

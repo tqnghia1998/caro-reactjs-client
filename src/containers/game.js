@@ -5,6 +5,7 @@ import actionChangeSort from '../actions/actionChangeSort';
 import actionJumpTo from '../actions/actionJumpTo';
 import actionJoinRoom from '../actions/actionJoinRoom';
 import actionChat from '../actions/actionChat';
+import actionRequest from '../actions/actionRequest';
 import Game from '../components/game/game';
 
 // Connect variables
@@ -15,6 +16,8 @@ function mapStateToProps(state) {
         stepNumber: state.gameReducers.data.stepNumber,
         winCells: state.gameReducers.data.winCells,
         accendingMode: state.gameReducers.data.accendingMode,
+        isFetching: state.gameReducers.isFetching,
+        message: state.gameReducers.message,
         userInfo: state.infoReducers.userInfo,
         roomInfo: state.roomReducers.roomInfo,
         chatHistory: state.roomReducers.chatHistory
@@ -29,7 +32,8 @@ function mapDispatchToProps(dispatch) {
             actionChangeSort,
             actionJumpTo,
             actionJoinRoom,
-            actionChat
+            actionChat,
+            actionRequest
         }, dispatch)
     };
 }

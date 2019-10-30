@@ -17,13 +17,15 @@ function Game(props) {
     const { accendingMode } = props;
     const { userInfo } = props;
     const { roomInfo } = props;
+    const { isFetching } = props;
+    const { message } = props;
 
     // Setup socket
     setupSocket();
 
     // Setup chat engine
     const { chatHistory } = props;
-    const [message, setMessage] = useState('');
+    const [chatMessage, setChatMessage] = useState('');
     const chatHistoryUI = [];
     for (var i = 0; i < chatHistory.length; i++) {
         const color = chatHistory[i].sender === 'Mình' ? 'blue' : 'red';
@@ -34,7 +36,7 @@ function Game(props) {
     }
 
     // Setup disable state for components
-    const needToDisable = (roomInfo.playerO === 'DISCONNECTED');
+    const needToDisable = (roomInfo.playerO === 'DISCONNECTED') || isFetching;
 
     // Setup board game
     const current = history[stepNumber];
@@ -77,7 +79,10 @@ function Game(props) {
         <div className='App'>
             <header className='App-header'>
                 <img src={logo} className='App-logo' alt='logo' />
-                <Status nextMove={nextMove} winCells={winCells} rivalname={roomInfo.playerO}/>
+                <Status nextMove={nextMove}
+                        winCells={winCells}
+                        rivalname={roomInfo.playerO}
+                        messages={message}/>
                 <div className='board-game'>
                     <div>
                         {/* Our infomation */}
@@ -105,16 +110,16 @@ function Game(props) {
                         <Card className='card'>
                             <Card.Body className='card-body'>
                                 <Card.Title className='card-title'>Nhắn tin</Card.Title>
-                                <ScrollToBottom className='scroll-view-chat'>
+                                <div className='scroll-view-chat'>
                                     {chatHistoryUI}
-                                </ScrollToBottom>
+                                </div>
                                 <form onSubmit={e => handleChat(e)}>
-                                    <FormControl type='message'
+                                    <FormControl type='chatMessage'
                                         className='input-message'
                                         placeholder='Nhập và nhấn Enter'
-                                        value={message}
+                                        value={chatMessage}
                                         disabled={needToDisable}
-                                        onChange={e => setMessage(e.target.value)}>
+                                        onChange={e => setChatMessage(e.target.value)}>
                                     </FormControl>
                                 </form>
                             </Card.Body>
@@ -282,10 +287,9 @@ function Game(props) {
 
     function userClick(row, col) {
         const { nextMove } = props;
-        const { roomInfo } = props;
 
         // Prevent user click if rival is disconnected
-        if (roomInfo.playerO === 'DISCONNECTED') {
+        if (needToDisable) {
             return;
         }
 
@@ -346,8 +350,8 @@ function Game(props) {
 
     function handleChat(e) {
         e.preventDefault();
-        socket.emit('chat', message);
-        setMessage('');
+        socket.emit('chat', chatMessage);
+        setChatMessage('');
     }
 
     function setupSocket() {
@@ -363,45 +367,57 @@ function Game(props) {
         });
         socket.on('surrender-request', function (data) {
             if (window.confirm(`Đối thủ muốn đầu hàng ván này!`)) {
-                socket.emit('surender-result', 'yes');
+                socket.emit('surrender-result', 'yes');
+                actions.actionRequest(true, `Chúc mừng bạn đã giành chiến thắng !`);
             }
             else {
-                socket.emit('surender-result', 'no');
+                socket.emit('surrender-result', 'no');
+                actions.actionRequest(false, null);
             }
         });
         socket.on('surrender-result', function (data) {
             if (data === `yes`) {
-                alert(`Đối thủ đã chấp nhận!`);
+                alert(`Đối thủ đã chấp nhận lời đầu hàng!`);
+                actions.actionRequest(true, `Bạn đã chấp nhận thua cuộc !`);
             }
             else {
-                alert(`Đối thủ đã từ chối!`);
+                alert(`Đối thủ đã từ chối lời đầu hàng!`);
+                actions.actionRequest(false, null);
             }
         });
         socket.on('ceasefire-request', function (data) {
-            if (window.confirm(`Đối thủ muốn xin hoà ván này `)) {
+            if (window.confirm(`Đối thủ muốn xin hoà ván này!`)) {
                 socket.emit('ceasefire-result', 'yes');
+                actions.actionRequest(true, `Đã thống nhất hoà nhau !`);
             }
             else {
                 socket.emit('ceasefire-result', 'no');
+                actions.actionRequest(false, null);
             }
         });
         socket.on('ceasefire-result', function (data) {
             if (data === `yes`) {
-                alert(`Đối thủ đã chấp nhận!`);
+                alert(`Đối thủ đã chấp nhận hoà!`);
+                actions.actionRequest(true, `Đã thống nhất hoà nhau !`);
             }
             else {
-                alert(`Đối thủ đã từ chối!`);
+                alert(`Đối thủ đã từ chối hoà!`);
+                actions.actionRequest(false, null);
             }
         });
     }
 
-    function requestSurrender(socket) {
-        socket.emit('surender-request', userInfo.username);
+    function requestSurrender() {
+        if (window.confirm(`Bạn muốn đầu hàng ván này?`)) {
+            socket.emit('surrender-request', userInfo.username);
+            actions.actionRequest(true, `... Đang chờ đối thủ trả lời ...`);
+        }
     }
 
-    function requestCeasefire(socket) {
+    function requestCeasefire() {
         if (window.confirm(`Bạn muốn xin hoà ván này?`)) {
             socket.emit('ceasefire-request', userInfo.username);
+            actions.actionRequest(true, `... Đang chờ đối thủ trả lời ...`);
         }
     }
 }
