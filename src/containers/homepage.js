@@ -4,7 +4,9 @@ import { bindActionCreators } from 'redux';
 import { Button } from 'react-bootstrap';
 import Game from './game';
 import fetchInfo from '../actions/actionGetInfo';
+import actionJoinRoom from '../actions/actionJoinRoom';
 import logo from '../logo.svg';
+import socket from '../socket.io/socket.io';
 
 function Homepage(props) {
     
@@ -13,6 +15,7 @@ function Homepage(props) {
     const { didInvalidate } = props;
     const { isFetching } = props;
     const { userInfo } = props;
+    const { roomInfo } = props;
 
     // If it is already invalidate
     if (didInvalidate) {
@@ -27,9 +30,26 @@ function Homepage(props) {
     // If it is not invalidate (REQUESTING or SUCCESS or 'FIRST TIME ENTER')
     else {
 
-        // If success, we have to directly pass userInfo cause state will lose after redirecting
+        // If success, create a room
         if (userInfo) {
-            return (<Game userInfo={userInfo}/>);
+
+            socket.removeAllListeners();
+            socket.on('joinroom-success', function (roomInfo) {
+                actions.actionJoinRoom(roomInfo);
+            });
+
+            if (roomInfo) {
+                return <Game />
+            }
+            else {
+                socket.emit('joinroom', userInfo);
+                return (
+                    <center>
+                        <img src={logo} className='App-logo-big' alt='logo' />
+                        <div className='status'>... ĐANG TÌM ĐỐI THỦ ...</div>
+                    </center>
+                );
+            }
         }
 
         // If first time enter, this make sure not call a loop request
@@ -37,11 +57,11 @@ function Homepage(props) {
             const token = localStorage.getItem('token');
             actions.fetchInfo(token);
         }
-            
+        
         return (
             <center>
                 <img src={logo} className='App-logo-big' alt='logo' />
-                <div className='status'>ĐANG KẾT NỐI</div>
+                <div className='status'>... ĐANG KẾT NỐI ...</div>
             </center>
         );
     }
@@ -53,6 +73,7 @@ function mapStateToProps(state) {
         isFetching: state.infoReducers.isFetching,
         didInvalidate: state.infoReducers.didInvalidate,
         userInfo: state.infoReducers.userInfo,
+        roomInfo: state.roomReducers.roomInfo
     };
 }
 
@@ -60,7 +81,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
-            fetchInfo
+            fetchInfo,
+            actionJoinRoom
         }, dispatch)
     };
 }

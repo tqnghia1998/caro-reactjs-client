@@ -26,6 +26,8 @@ class Config extends Component {
         // This section & isFetching are for getting info
         didInvalidate: false,
         userInfo: null,
+        roomInfo: null,
+        chatHistory: [],
 
         // This section is for game play
         data: {

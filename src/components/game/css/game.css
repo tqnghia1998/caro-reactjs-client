@@ -106,33 +106,38 @@ ol, ul {
 .board-button {
   font: 15px 'Courier New', Courier, monospace;
   height: 30px;
-  width: 200px;
+  width: 250px;
   text-align: left;
   margin-bottom: 1px;
-}
-
-.function-button {
-  font: 15px 'Courier New', Courier, monospace;
-  height: 30px;
-  width: 200px;
-  text-align: left;
 }
 
 .change-sort-button {
   font: 15px 'Courier New', Courier, monospace;
   height: 30px;
   margin-left: 30px;
-  width: 200px;
+  width: 250px;
   text-align: left;
   margin-bottom: 1px;
 }
 
-ol {
+.scroll-view {
   font-size: 13px;
   overflow: hidden;
   overflow-y: scroll;
-  height: 467px;
-  list-style:none;
+  height: 480px;
+  list-style: none;
+  margin: 0px;
+}
+
+.scroll-view-chat {
+  text-align: left;
+  font: 13px 'Courier New', Courier, monospace;
+  color: black;
+  padding: 5px;
+  margin: 5px;
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 145px;
 }
 
 .board-game {
@@ -142,7 +147,7 @@ ol {
 }
 
 .card {
-  width: 200px;
+  width: 250px;
   margin-right: 30px;
 }
 
@@ -157,8 +162,14 @@ ol {
   color: rgb(51, 53, 172);
 }
 
-.card-text {
+.card-text-bold {
   font: bold 13px 'Courier New', Courier, monospace;
+  color: black;
+  margin-bottom: 5px;
+}
+
+.card-text {
+  font: 13px 'Courier New', Courier, monospace;
   color: black;
   margin-bottom: 5px;
 }
@@ -178,7 +189,15 @@ ol {
 }
 
 .container-board {  
-  display: grid;  
+  display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;  
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;  
+}
+
+.input-message {
+  height: 25px;
+  font: 13px 'Courier New', Courier, monospace;
+  padding: 5px;
+  margin: 5px;
+  width: 238px;
 }

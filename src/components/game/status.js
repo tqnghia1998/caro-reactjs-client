@@ -3,9 +3,14 @@ import Config from '../../constants/configs';
 
 function Status(props) {
     const { winCells } = props;
+    const { rivalname } = props;
     
     let message;
-    if (winCells !== null) {
+
+    if (rivalname === 'DISCONNECTED') {
+        message = 'Đối thủ đã thoát khỏi phòng chơi !';
+    }
+    else if (winCells !== null) {
         const winner = props.nextMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
         message = `Chúc mừng ${  winner  } đã giành chiến thắng !`;
     }

@@ -3,6 +3,8 @@ import { bindActionCreators } from 'redux';
 import actionClick from '../actions/actionClick';
 import actionChangeSort from '../actions/actionChangeSort';
 import actionJumpTo from '../actions/actionJumpTo';
+import actionJoinRoom from '../actions/actionJoinRoom';
+import actionChat from '../actions/actionChat';
 import Game from '../components/game/game';
 
 // Connect variables
@@ -12,7 +14,10 @@ function mapStateToProps(state) {
         nextMove: state.gameReducers.data.nextMove,
         stepNumber: state.gameReducers.data.stepNumber,
         winCells: state.gameReducers.data.winCells,
-        accendingMode: state.gameReducers.data.accendingMode
+        accendingMode: state.gameReducers.data.accendingMode,
+        userInfo: state.infoReducers.userInfo,
+        roomInfo: state.roomReducers.roomInfo,
+        chatHistory: state.roomReducers.chatHistory
     };
 }
 
@@ -22,7 +27,9 @@ function mapDispatchToProps(dispatch) {
         actions: bindActionCreators({
             actionClick,
             actionChangeSort,
-            actionJumpTo
+            actionJumpTo,
+            actionJoinRoom,
+            actionChat
         }, dispatch)
     };
 }

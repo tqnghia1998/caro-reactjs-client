@@ -1,10 +1,12 @@
-import React from 'react';
-import { Button, Card } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Card, FormControl } from 'react-bootstrap';
 import Board from './board';
 import Config from '../../constants/configs';
 import Status from './status';
 import logo from '../../logo.svg';
 import './css/game.css';
+import socket from '../../socket.io/socket.io';
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 function Game(props) {
     const { actions } = props;
@@ -14,26 +16,43 @@ function Game(props) {
     const { winCells } = props;
     const { accendingMode } = props;
     const { userInfo } = props;
-    const { fullname } = userInfo;
+    const { roomInfo } = props;
 
+    // Setup socket
+    setupSocket();
+
+    // Setup chat engine
+    const { chatHistory } = props;
+    const [message, setMessage] = useState('');
+    const chatHistoryUI = [];
+    for (var i = 0; i < chatHistory.length; i++) {
+        const color = chatHistory[i].sender === 'Mình' ? 'blue' : 'red';
+        const style = { color: color };
+        chatHistoryUI.push(<b style={style}>{chatHistory[i].sender}</b>);
+        chatHistoryUI.push(': ' + chatHistory[i].message);
+        chatHistoryUI.push(<br></br>);
+    }
+
+    // Setup disable state for components
+    const needToDisable = (roomInfo.playerO === 'DISCONNECTED');
+
+    // Setup board game
     const current = history[stepNumber];
     const sortMode = accendingMode ? `Nước đi tăng dần` : `Nước đi giảm dần`;
     const moves = [];
 
-    console.log("CHANGECHANGE");
-
     history.map((step, move) => {
-        const content = move ? `Lượt #${
+        const content = move ? `Xin về lượt #${
             Config.makeTwoDigits(move)}:
             (${Config.makeTwoDigits(history[move].x)},${Config.makeTwoDigits(history[move].y)})`
-        : `Chơi lại từ đầu !`;
+        : `Xin chơi lại từ đầu !`;
         const variant = (move === stepNumber) ? `danger` : `success`;
         
         // Get current move
         const currentMove = (
             // eslint-disable-next-line react/no-array-index-key
             <li key={move}>
-                <Button onClick={() => jumpTo(move)} variant={variant}
+                <Button onClick={() => jumpTo(move)} variant={variant} disabled={needToDisable}
                     className='board-button'>{content}</Button>
             </li>
         )
@@ -49,53 +68,78 @@ function Game(props) {
         return moves;
     })
 
+    // Setup players info
+    const ourname = userInfo.fullname;
+    const isPlayerX = ourname === roomInfo.playerX;
+    const rivalname = isPlayerX ? roomInfo.playerO : roomInfo.playerX;
+
     return (
         <div className='App'>
             <header className='App-header'>
                 <img src={logo} className='App-logo' alt='logo' />
-                <Status nextMove={nextMove} winCells={winCells} />
+                <Status nextMove={nextMove} winCells={winCells} rivalname={roomInfo.playerO}/>
                 <div className='board-game'>
                     <div>
                         {/* Our infomation */}
                         <Card className='card'>
                             <Card.Body className='card-body'>
-                                <Card.Title className='card-title'>Người chơi</Card.Title>
-                                <Card.Text className='card-text'>Nước đi: X</Card.Text>
-                                <Card.Text className='card-text'>{fullname}</Card.Text>
-                                <Button className='logout-button' variant='info' onClick={() => logOut()}>Đăng xuất</Button>
+                                <Card.Title className='card-title'>[{isPlayerX ? `X` : `O`}] Mình [{isPlayerX ? `X` : `O`}]</Card.Title>
+                                <Card.Text className='card-text-bold'><b>{ourname}</b></Card.Text>
+                                <Button className='logout-button' variant='info' onClick={() => goHome()}>Trang chủ</Button>
                             </Card.Body>
                         </Card>
                         <br></br>
                         {/* Rival infomation */}
                         <Card className='card'>
                             <Card.Body className='card-body'>
-                                <Card.Title className='card-title'>Đối thủ</Card.Title>
-                                <Card.Text className='card-text'>Nước đi: O</Card.Text>
-                                <Card.Text className='card-text'>{fullname}</Card.Text>
-                                <Button className='logout-button' variant='info' onClick={() => logOut()}>Đầu hàng</Button>&nbsp;
-                                <Button className='logout-button' variant='info' onClick={() => logOut()}>Xin hoà</Button>
+                                <Card.Title className='card-title'>[{!isPlayerX ? `X` : `O`}] Đối thủ [{!isPlayerX ? `X` : `O`}]</Card.Title>
+                                <Card.Text className='card-text-bold'><b>{rivalname}</b></Card.Text>
+                                <Button className='logout-button' variant='info' onClick={() => requestSurrender()}
+                                        disabled={needToDisable}>Đầu hàng</Button>&nbsp;&nbsp;
+                                <Button className='logout-button' variant='info' onClick={() => requestCeasefire()}
+                                        disabled={needToDisable}>Xin hoà</Button>
+                            </Card.Body>
+                        </Card>
+                        <br></br>
+                        {/* Chat panel */}
+                        <Card className='card'>
+                            <Card.Body className='card-body'>
+                                <Card.Title className='card-title'>Nhắn tin</Card.Title>
+                                <ScrollToBottom className='scroll-view-chat'>
+                                    {chatHistoryUI}
+                                </ScrollToBottom>
+                                <form onSubmit={e => handleChat(e)}>
+                                    <FormControl type='message'
+                                        className='input-message'
+                                        placeholder='Nhập và nhấn Enter'
+                                        value={message}
+                                        disabled={needToDisable}
+                                        onChange={e => setMessage(e.target.value)}>
+                                    </FormControl>
+                                </form>
                             </Card.Body>
                         </Card>
                     </div>
                     <div>
                         <Board  winCells={winCells}
                                 squares={current.squares}
-                                handleClick={(i, j) => handleClick(i, j)}/>
+                                handleClick={(i, j) => userClick(i, j)}/>
                     </div>
                     <div>
                         {/* Change sort mode */}
                         <Button className='change-sort-button' onClick={actions.actionChangeSort}>{sortMode}</Button>
                         <br></br>
-                        <ol>{moves}</ol>
+                        <ScrollToBottom className='scroll-view' mode={accendingMode ? `bottom` : `top`}>
+                            <ol >{moves}</ol>
+                        </ScrollToBottom>
                     </div>
                 </div>
             </header>
         </div>
     );
 
-    function logOut() {
-        localStorage.setItem('token', null);
-        window.location.href = '/login';
+    function goHome() {
+        window.location.href = '/';
     }
 
     function checkWin(row, col, user, stepNumber) {
@@ -236,6 +280,25 @@ function Game(props) {
         return null;
     }
 
+    function userClick(row, col) {
+        const { nextMove } = props;
+        const { roomInfo } = props;
+
+        // Prevent user click if rival is disconnected
+        if (roomInfo.playerO === 'DISCONNECTED') {
+            return;
+        }
+
+        // Prevent user click if not his turn
+        if ((isPlayerX && nextMove === Config.oPlayer) || (!isPlayerX && nextMove === Config.xPlayer)) {
+            return;
+        }
+        
+        // Send move to server
+        socket.emit('move', { row: row, col: col });
+        handleClick(row, col);
+    }
+
     function handleClick(row, col) {
         const { actions } = props
         const { stepNumber } = props;
@@ -279,6 +342,67 @@ function Game(props) {
 
         // Call action
         actions.actionJumpTo(stepNumber, nextMove, winCells);
+    }
+
+    function handleChat(e) {
+        e.preventDefault();
+        socket.emit('chat', message);
+        setMessage('');
+    }
+
+    function setupSocket() {
+        socket.removeAllListeners();
+        socket.on('move', function (data) {
+            handleClick(data.row, data.col);
+        });
+        socket.on('disconnect', function (data) {
+            actions.actionJoinRoom(data);
+        });
+        socket.on('chat', function (data) {
+            actions.actionChat(data);
+        });
+        socket.on('surrender-request', function (data) {
+            if (window.confirm(`Đối thủ muốn đầu hàng ván này!`)) {
+                socket.emit('surender-result', 'yes');
+            }
+            else {
+                socket.emit('surender-result', 'no');
+            }
+        });
+        socket.on('surrender-result', function (data) {
+            if (data === `yes`) {
+                alert(`Đối thủ đã chấp nhận!`);
+            }
+            else {
+                alert(`Đối thủ đã từ chối!`);
+            }
+        });
+        socket.on('ceasefire-request', function (data) {
+            if (window.confirm(`Đối thủ muốn xin hoà ván này `)) {
+                socket.emit('ceasefire-result', 'yes');
+            }
+            else {
+                socket.emit('ceasefire-result', 'no');
+            }
+        });
+        socket.on('ceasefire-result', function (data) {
+            if (data === `yes`) {
+                alert(`Đối thủ đã chấp nhận!`);
+            }
+            else {
+                alert(`Đối thủ đã từ chối!`);
+            }
+        });
+    }
+
+    function requestSurrender(socket) {
+        socket.emit('surender-request', userInfo.username);
+    }
+
+    function requestCeasefire(socket) {
+        if (window.confirm(`Bạn muốn xin hoà ván này?`)) {
+            socket.emit('ceasefire-request', userInfo.username);
+        }
     }
 }
 

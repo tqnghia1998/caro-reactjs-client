@@ -13,6 +13,10 @@ class ActionType extends Component {
     static REGISTER = 'REGISTER';
 
     static GET_INFO = 'GET_INFO';
+
+    static JOIN_ROOM = 'JOIN_ROOM';
+
+    static CHAT = 'CHAT';
 }
 
 export default ActionType;
