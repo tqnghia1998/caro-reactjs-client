@@ -31,7 +31,7 @@ export default function handleGame(state = Config.initialState, action) {
                     ...state.data,
                     stepNumber: action.stepNumber,
                     nextMove: action.nextMove,
-                    winCells: action.winCells   
+                    winCells: action.winCells
                 }
             };
         
