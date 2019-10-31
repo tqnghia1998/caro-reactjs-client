@@ -51,22 +51,27 @@ function Game(props) {
         const variant = (move === stepNumber) ? `danger` : `success`;
         
         // Get current move
+        const isDisabled = needToDisable && message && message.startsWith("..");
         const currentMove = (
             // eslint-disable-next-line react/no-array-index-key
             <li key={move}>
-                <Button onClick={() => requestUndo(move)} variant={variant} disabled={needToDisable}
+                <Button onClick={() => requestUndo(move)} variant={variant} disabled={isDisabled}
                     className='board-button'>{content}</Button>
             </li>
         )
 
         // Push head or tail depends on sort mode
-        if (accendingMode) {
-            moves.push(currentMove);
+        if (needToDisable && message && !message.startsWith("...") && move > 0) {
+            // Invisible moves when match is finish
         }
         else {
-            moves.splice(0, 0, currentMove);
+            if (accendingMode) {
+                moves.push(currentMove);
+            }
+            else {
+                moves.splice(0, 0, currentMove);
+            }
         }
-
         return moves;
     })
 
@@ -430,7 +435,27 @@ function Game(props) {
                 alert(`Đối thủ không đồng ý!`);
             }
             actions.actionRequest(false, null);
-        })
+        });
+
+        // Play again
+        socket.on('play-again-request', function (data) {
+            if (window.confirm(`Đối thủ muốn chơi lại!`)) {
+                actions.actionResetGame(isPlayerX ? Config.xPlayer : Config.oPlayer);
+                socket.emit('play-again-result', 'yes');
+            }
+            else {
+                socket.emit('undo-result', 'no');
+            }
+        });
+        socket.on('play-again-result', function (data) {
+            if (data === 'yes') {
+                actions.actionResetGame(isPlayerX ? Config.oPlayer : Config.xPlayer);
+                alert(`Đối thủ đã đồng ý!`);
+            }
+            else {
+                alert(`Đối thủ không đồng ý!`);
+            }
+        });
     }
 
     function requestSurrender() {
@@ -448,6 +473,15 @@ function Game(props) {
     }
 
     function requestUndo(stepNumber) {
+
+        if (stepNumber === 0) {
+            if (window.confirm(`Bạn muốn chơi lại?`)) {
+                socket.emit('play-again-request', '');
+                actions.actionRequest(true, `..! Đang chờ đối thủ đồng ý !..`);
+            }
+            return;
+        }
+
         const { history } = props;
         const target = history[stepNumber];
 

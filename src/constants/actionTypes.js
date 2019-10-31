@@ -19,6 +19,8 @@ class ActionType extends Component {
     static CHAT = 'CHAT';
 
     static REQUEST = 'REQUEST';
+
+    static RESET_GAME = 'RESET_GAME';
 }
 
 export default ActionType;

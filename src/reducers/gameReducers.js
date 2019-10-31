@@ -40,6 +40,26 @@ export default function handleGame(state = Config.initialState, action) {
                 ...state,
                 isFetching: action.isRequesting,
                 message: action.message
+            };
+        
+        case ActionType.RESET_GAME:
+            return {
+                ...state,
+                isFetching: false,
+                message: null,
+                data: {
+                    history: [{
+                        x: null,
+                        y: null,
+                        squares: Array(Config.brdSize).fill(null).map(() => {
+                            return Array(Config.brdSize).fill(null)
+                        })
+                    }],
+                    nextMove: action.nextMove,
+                    stepNumber: 0,
+                    winCells: null,
+                    accendingMode: false,
+                }
             }
         
         default:

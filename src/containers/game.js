@@ -6,6 +6,7 @@ import actionJumpTo from '../actions/actionJumpTo';
 import actionJoinRoom from '../actions/actionJoinRoom';
 import actionChat from '../actions/actionChat';
 import actionRequest from '../actions/actionRequest';
+import actionResetGame from '../actions/actionResetGame';
 import Game from '../components/game/game';
 
 // Connect variables
@@ -33,7 +34,8 @@ function mapDispatchToProps(dispatch) {
             actionJumpTo,
             actionJoinRoom,
             actionChat,
-            actionRequest
+            actionRequest,
+            actionResetGame
         }, dispatch)
     };
 }
