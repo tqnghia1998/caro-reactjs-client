@@ -21,6 +21,8 @@ class ActionType extends Component {
     static REQUEST = 'REQUEST';
 
     static RESET_GAME = 'RESET_GAME';
+
+    static REFRESH = 'REFRESH';
 }
 
 export default ActionType;

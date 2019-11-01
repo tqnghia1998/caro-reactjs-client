@@ -194,6 +194,22 @@ ol, ul {
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;  
 }
 
+.container-button-home {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  height: 100px;
+  width: 200px;
+}
+
+.home-buttons {
+  font: bold 15px 'Courier New', Courier, monospace;
+  height: 30px;
+  width: 200px;
+  text-align: center;
+  margin-bottom: 2px;
+}
+
 .input-message {
   height: 25px;
   font: 13px 'Courier New', Courier, monospace;

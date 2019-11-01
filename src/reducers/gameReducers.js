@@ -60,7 +60,7 @@ export default function handleGame(state = Config.initialState, action) {
                     winCells: null,
                     accendingMode: false,
                 }
-            }
+            };
         
         default:
             return state;

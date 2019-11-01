@@ -5,6 +5,7 @@ import { Button } from 'react-bootstrap';
 import Game from './game';
 import fetchInfo from '../actions/actionGetInfo';
 import actionJoinRoom from '../actions/actionJoinRoom';
+import actionRefresh from '../actions/actionRefresh';
 import logo from '../logo.svg';
 import socket from '../socket.io/socket.io';
 
@@ -35,18 +36,28 @@ function Homepage(props) {
 
             socket.removeAllListeners();
             socket.on('joinroom-success', function (roomInfo) {
+                socket.joinroom = true;
                 actions.actionJoinRoom(roomInfo);
             });
 
+            // If found a rival, start game
             if (roomInfo) {
+
                 return <Game />
             }
+            // Choose to play with AI or other user
             else {
-                socket.emit('joinroom', userInfo);
+
                 return (
                     <center>
                         <img src={logo} className='App-logo-big' alt='logo' />
-                        <div className='status'>... ĐANG TÌM ĐỐI THỦ ...</div>
+                        <div className='status'>... {userInfo.fullname.toUpperCase()} ...</div>
+                        <div className='container-button-home'>
+                            <Button className='home-buttons' variant='danger' onClick={(e) => findRival(e, userInfo)} as='input' type='button' value='Tìm đối thủ' onChange={() => { }}></Button>
+                            <Button className='home-buttons' variant='primary' onClick={() => { }}>Chơi với AI</Button>
+                            <Button className='home-buttons' variant='success' onClick={() => { }}>Cập nhật thông tin</Button>
+                            <Button className='home-buttons' variant='info' onClick={() => logOut()}>Đăng xuất</Button>
+                        </div>
                     </center>
                 );
             }
@@ -65,6 +76,18 @@ function Homepage(props) {
             </center>
         );
     }
+
+    function logOut() {
+        localStorage.setItem('token', null);
+        window.location.href = '/login';
+        actions.actionRefresh();
+    }
+
+    function findRival(e, userInfo) {
+        e.target.value = '... Đang tìm ...';
+        e.target.disabled = true;
+        socket.emit('joinroom', userInfo);
+    }
 }
 
 // Connect variables
@@ -82,7 +105,8 @@ function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
             fetchInfo,
-            actionJoinRoom
+            actionJoinRoom,
+            actionRefresh
         }, dispatch)
     };
 }

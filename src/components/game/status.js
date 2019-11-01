@@ -14,7 +14,7 @@ function Status(props) {
     else if (messages) {
         message = messages;
     }
-    else if (winCells !== null) {
+    else if (winCells) {
         const winner = props.nextMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
         message = `Chúc mừng ${  winner  } đã giành chiến thắng !`;
     }

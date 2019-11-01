@@ -13,7 +13,10 @@ export default function handleRoom(state = Config.initialState, action) {
             return {
                 ...state,
                 chatHistory: [...state.chatHistory, action.message]
-            }
+            };
+        
+        case ActionType.REFRESH:
+            return Config.initialState;
         
         default:
             return state;

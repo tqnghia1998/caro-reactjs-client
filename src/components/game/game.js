@@ -36,7 +36,8 @@ function Game(props) {
     }
 
     // Setup disable state for components
-    const needToDisable = (roomInfo.playerO === 'DISCONNECTED') || isFetching;
+    const oneIsDisconnect = roomInfo.playerO === 'DISCONNECTED' || roomInfo.playerX === 'DISCONNECTED';
+    const needToDisable = winCells || oneIsDisconnect || isFetching;
 
     // Setup board game
     const current = history[stepNumber];
@@ -51,7 +52,7 @@ function Game(props) {
         const variant = (move === stepNumber) ? `danger` : `success`;
         
         // Get current move
-        const isDisabled = needToDisable && message && message.startsWith("..");
+        const isDisabled = oneIsDisconnect || (needToDisable && message && message.startsWith(".."));
         const currentMove = (
             // eslint-disable-next-line react/no-array-index-key
             <li key={move}>
@@ -61,7 +62,10 @@ function Game(props) {
         )
 
         // Push head or tail depends on sort mode
-        if (needToDisable && message && !message.startsWith("...") && move > 0) {
+        if (winCells && move > 0) {
+            // Invisible moves when match is finish
+        }
+        else if (needToDisable && message && !message.startsWith("...") && move > 0) {
             // Invisible moves when match is finish
         }
         else {
@@ -75,10 +79,14 @@ function Game(props) {
         return moves;
     })
 
-    // Setup players info
+    // Setup players info (too complicated, do not try to understand)
     const ourname = userInfo.fullname;
-    const isPlayerX = ourname === roomInfo.playerX;
+    var isPlayerX = ourname === roomInfo.playerX;
+    if (ourname !== roomInfo.playerX) {
+        isPlayerX = ourname !== roomInfo.playerO;
+    }
     const rivalname = isPlayerX ? roomInfo.playerO : roomInfo.playerX;
+    //alert(JSON.stringify(roomInfo));
 
     return (
         <div className='App'>
@@ -149,6 +157,7 @@ function Game(props) {
     );
 
     function goHome() {
+        actions.actionRefresh();
         window.location.href = '/';
     }
 
@@ -455,6 +464,16 @@ function Game(props) {
             else {
                 alert(`Đối thủ không đồng ý!`);
             }
+        });
+
+        // Reconnect if browser refresh
+        if (!socket.joinroom) {
+            socket.joinroom = true;
+            socket.emit('on-reconnect', { roomInfo, userInfo });
+        }
+        socket.on('on-reconnect', function (data) {
+            actions.actionJoinRoom(data);
+            actions.actionRequest(false, null);
         });
     }
 
