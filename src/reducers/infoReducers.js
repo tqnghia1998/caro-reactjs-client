@@ -31,6 +31,9 @@ export default function handleGetInfo(state = Config.initialState, action) {
             else {
                 return state;
             }
+
+        case ActionType.REFRESH:
+            return Config.initialState;
         
         default:
             return state;

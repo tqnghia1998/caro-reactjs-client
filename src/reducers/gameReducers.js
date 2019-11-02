@@ -62,6 +62,9 @@ export default function handleGame(state = Config.initialState, action) {
                 }
             };
         
+        case ActionType.REFRESH:
+            return Config.initialState;
+        
         default:
             return state;
     }

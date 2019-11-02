@@ -18,10 +18,7 @@ import './css/index.css';
 // Function save state
 function saveToLocalStorage(state) {
     try {
-        if (state.roomReducers.roomInfo
-            && state.roomReducers.roomInfo.playerO
-            && state.roomReducers.roomInfo.playerO != 'DISCONNECTED'
-            && state.roomReducers.roomInfo.playerX != 'DISCONNECTED') {
+        if (state.roomReducers.roomInfo) {
             localStorage.setItem('state', JSON.stringify(state));
         }
         else {

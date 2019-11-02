@@ -86,7 +86,6 @@ function Game(props) {
         isPlayerX = ourname !== roomInfo.playerO;
     }
     const rivalname = isPlayerX ? roomInfo.playerO : roomInfo.playerX;
-    //alert(JSON.stringify(roomInfo));
 
     return (
         <div className='App'>
@@ -374,7 +373,11 @@ function Game(props) {
             handleClick(data.row, data.col);
         });
         socket.on('disconnect', function (data) {
-            actions.actionJoinRoom(data);
+
+            // Check if data is 'transport close'
+            if (data.id) {
+                actions.actionJoinRoom(data);
+            }
         });
         socket.on('chat', function (data) {
             actions.actionChat(data);
@@ -472,8 +475,16 @@ function Game(props) {
             socket.emit('on-reconnect', { roomInfo, userInfo });
         }
         socket.on('on-reconnect', function (data) {
-            actions.actionJoinRoom(data);
-            actions.actionRequest(false, null);
+
+            // If found the room, join it
+            if (data) {
+                actions.actionJoinRoom(data);
+            }
+
+            // Else reset
+            else {
+                actions.actionRefresh();
+            }
         });
     }
 

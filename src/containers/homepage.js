@@ -6,6 +6,7 @@ import Game from './game';
 import fetchInfo from '../actions/actionGetInfo';
 import actionJoinRoom from '../actions/actionJoinRoom';
 import actionRefresh from '../actions/actionRefresh';
+import actionResetGame from '../actions/actionResetGame';
 import logo from '../logo.svg';
 import socket from '../socket.io/socket.io';
 
@@ -42,12 +43,10 @@ function Homepage(props) {
 
             // If found a rival, start game
             if (roomInfo) {
-
                 return <Game />
             }
             // Choose to play with AI or other user
             else {
-
                 return (
                     <center>
                         <img src={logo} className='App-logo-big' alt='logo' />
@@ -106,7 +105,8 @@ function mapDispatchToProps(dispatch) {
         actions: bindActionCreators({
             fetchInfo,
             actionJoinRoom,
-            actionRefresh
+            actionRefresh,
+            actionResetGame
         }, dispatch)
     };
 }
