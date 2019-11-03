@@ -18,7 +18,7 @@ export default function fetchChangeInfo(username, oldPassword, password, email, 
 
         dispatch(actionChangeInfo('REQUEST', 'Xin vui lòng đợi...'));
 
-        return fetch('//localhost:3000/users/changeinfo', {
+        return fetch('https://btcn06-1612422.herokuapp.com/users/changeinfo', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
