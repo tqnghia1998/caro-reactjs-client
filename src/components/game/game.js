@@ -140,6 +140,7 @@ function Game(props) {
                     <div>
                         <Board  winCells={winCells}
                                 squares={current.squares}
+                                currentCell={[current.x, current.y]}
                                 handleClick={(i, j) => userClick(i, j)}/>
                     </div>
                     <div>
@@ -311,9 +312,10 @@ function Game(props) {
             return;
         }
         
-        // Send move to server
-        socket.emit('move', { row: row, col: col });
-        handleClick(row, col);
+        // Send move to server if it is valid
+        if (handleClick(row, col)) {
+            socket.emit('move', { row: row, col: col });
+        }
     }
 
     function handleClick(row, col) {
@@ -345,20 +347,37 @@ function Game(props) {
 
             // Call action
             actions.actionClick(_history, _nextMove, _winCells);
+            return true;
         }
+        return false;
     }
 
-    function jumpTo(stepNumber) {
+    function jumpTo(step) {
         const { actions } = props
         const { history } = props;
 
-        const target = history[stepNumber];
-        const curMove = stepNumber % 2 === 0 ? Config.oPlayer : Config.xPlayer;
-        const nextMove = stepNumber % 2 !== 0 ? Config.oPlayer : Config.xPlayer;
-        const winCells = checkWin(target.x, target.y, curMove, stepNumber);
+        const { nextMove } = props;
+        const oppositeNextMove = nextMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
+        const { stepNumber } = props;
+        const target = history[step];
+
+        var futureCurrMove;
+        var futureNextMove;
+
+        // If current step and wanted step is the same type
+        if ((stepNumber % 2 === 0 && step % 2 === 0) || (stepNumber % 2 !== 0 && step % 2 !== 0)) {
+            futureCurrMove = oppositeNextMove;
+            futureNextMove = nextMove;
+        }
+        else {
+            futureCurrMove = nextMove;
+            futureNextMove = oppositeNextMove;
+        }
+        
+        const winCells = checkWin(target.x, target.y, futureCurrMove, step);
 
         // Call action
-        actions.actionJumpTo(stepNumber, nextMove, winCells);
+        actions.actionJumpTo(step, futureNextMove, winCells);
     }
 
     function handleChat(e) {
@@ -386,18 +405,24 @@ function Game(props) {
         // Surrender / Ceasefire
         socket.on('surrender-request', function (data) {
             if (window.confirm(`Đối thủ muốn đầu hàng ván này!`)) {
-                socket.emit('surrender-result', 'yes');
+                socket.emit('surrender-result', {
+                    message: 'yes'
+                });
                 actions.actionRequest(true, `Chúc mừng bạn đã giành chiến thắng !`);
             }
             else {
-                socket.emit('surrender-result', 'no');
+                socket.emit('surrender-result', {
+                    message: 'no'
+                });
                 actions.actionRequest(false, null);
             }
         });
         socket.on('surrender-result', function (data) {
-            if (data === `yes`) {
+            if (data.message === `yes`) {
                 actions.actionRequest(true, `Bạn đã chấp nhận thua cuộc !`);
-                alert(`Đối thủ đã chấp nhận lời đầu hàng!`);
+                if (!data.noAlert) {
+                    alert(`Đối thủ đã chấp nhận lời đầu hàng!`);
+                }
             }
             else {
                 actions.actionRequest(false, null);
@@ -406,18 +431,24 @@ function Game(props) {
         });
         socket.on('ceasefire-request', function (data) {
             if (window.confirm(`Đối thủ muốn xin hoà ván này!`)) {
-                socket.emit('ceasefire-result', 'yes');
+                socket.emit('ceasefire-result', {
+                    message: 'yes'
+                });
                 actions.actionRequest(true, `Đã thống nhất hoà nhau !`);
             }
             else {
-                socket.emit('ceasefire-result', 'no');
+                socket.emit('ceasefire-result', {
+                    message: 'no'
+                });
                 actions.actionRequest(false, null);
             }
         });
         socket.on('ceasefire-result', function (data) {
-            if (data === `yes`) {
+            if (data.message === 'yes') {
                 actions.actionRequest(true, `Đã thống nhất hoà nhau !`);
-                alert(`Đối thủ đã chấp nhận hoà!`);
+                if (!data.noAlert) {
+                    alert(`Đối thủ đã chấp nhận hoà!`);
+                }
             }
             else {
                 actions.actionRequest(false, null);
@@ -441,7 +472,9 @@ function Game(props) {
         socket.on('undo-result', function (data) {
             if (data.message === `yes`) {
                 jumpTo(data.stepNumber);
-                alert(`Đối thủ đã đồng ý!`);
+                if (!data.noAlert) {
+                    alert(`Đối thủ đã đồng ý!`);
+                }
             }
             else {
                 alert(`Đối thủ không đồng ý!`);
@@ -453,16 +486,22 @@ function Game(props) {
         socket.on('play-again-request', function (data) {
             if (window.confirm(`Đối thủ muốn chơi lại!`)) {
                 actions.actionResetGame(isPlayerX ? Config.xPlayer : Config.oPlayer);
-                socket.emit('play-again-result', 'yes');
+                socket.emit('play-again-result', {
+                    message: 'yes'
+                });
             }
             else {
-                socket.emit('undo-result', 'no');
+                socket.emit('undo-result', {
+                    message: 'no'
+                });
             }
         });
         socket.on('play-again-result', function (data) {
-            if (data === 'yes') {
+            if (data.message === 'yes') {
                 actions.actionResetGame(isPlayerX ? Config.oPlayer : Config.xPlayer);
-                alert(`Đối thủ đã đồng ý!`);
+                if (!data.noAlert) {
+                    alert(`Đối thủ đã đồng ý!`);
+                }
             }
             else {
                 alert(`Đối thủ không đồng ý!`);
@@ -514,13 +553,20 @@ function Game(props) {
 
         const { history } = props;
         const target = history[stepNumber];
+        var request = {
+            stepNumber,
+            x: target.x,
+            y: target.y
+        };
+
+        // For bot
+        if (history[stepNumber + 1]) {
+            request.nextX = history[stepNumber + 1].x;
+            request.nextY = history[stepNumber + 1].y;
+        }
 
         if (window.confirm(`Bạn muốn quay về lượt này?`)) {
-            socket.emit('undo-request', {
-                stepNumber,
-                x: target.x,
-                y: target.y
-            });
+            socket.emit('undo-request', request);
             actions.actionRequest(true, `... Đang chờ đối thủ trả lời ...`);
         }
     }

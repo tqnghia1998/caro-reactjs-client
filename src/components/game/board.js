@@ -18,14 +18,23 @@ function checkWinCell(winCells, row, col) {
 
 function Board (props) {
     const squaresDiv = [];
-    for (let i = 0; i < props.squares.length; i += 1) {
-        for (let j = 0; j < props.squares[i].length; j += 1) {
+    const { winCells } = props;
+    const { squares } = props;
+    const { handleClick } = props;
+    const { currentCell } = props;
+
+    for (let i = 0; i < squares.length; i += 1) {
+        for (let j = 0; j < squares[i].length; j += 1) {
+
             const squareKey = i * Config.brdSize + j;
-            squaresDiv.push(<Square winCell={checkWinCell(props.winCells, i, j)}
-                value={props.squares[i][j]}
+            const isCurrentCell = currentCell[0] === i && currentCell[1] === j;
+
+            squaresDiv.push(<Square winCell={checkWinCell(winCells, i, j)}
+                value={squares[i][j]}
                 row={i}
                 col={j}
-                handleClick={(row, col) => props.handleClick(row, col)}
+                isCurrentCell={isCurrentCell}
+                handleClick={(row, col) => handleClick(row, col)}
                 key={squareKey}/>);
         }
     }

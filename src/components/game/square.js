@@ -5,9 +5,10 @@ import { Button } from 'react-bootstrap';
 function Square(props) {
     const { value } = props;
     const { winCell } = props;
+    const { isCurrentCell } = props;
     
     const moveColor = value === Config.xPlayer ? Config.plColor.X : Config.plColor.O;
-    const className = winCell === false ? 'square' : 'square-win';
+    const className = isCurrentCell ? 'square-current' : (winCell === false ? 'square' : 'square-win');
     return (
         <Button className={className} variant="dark"
                 onClick={() => props.handleClick(props.row, props.col)}>

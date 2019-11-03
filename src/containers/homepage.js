@@ -7,6 +7,7 @@ import fetchInfo from '../actions/actionGetInfo';
 import actionJoinRoom from '../actions/actionJoinRoom';
 import actionRefresh from '../actions/actionRefresh';
 import actionResetGame from '../actions/actionResetGame';
+import Config from '../constants/configs';
 import logo from '../logo.svg';
 import socket from '../socket.io/socket.io';
 
@@ -40,6 +41,11 @@ function Homepage(props) {
                 socket.joinroom = true;
                 actions.actionJoinRoom(roomInfo);
             });
+            socket.on('joinroom-success-ai', function (roomInfo) {
+                socket.joinroom = true;
+                actions.actionJoinRoom(roomInfo);
+                actions.actionResetGame(Config.oPlayer);
+            });
 
             // If found a rival, start game
             if (roomInfo) {
@@ -53,7 +59,7 @@ function Homepage(props) {
                         <div className='status'>... {userInfo.fullname.toUpperCase()} ...</div>
                         <div className='container-button-home'>
                             <Button className='home-buttons' variant='danger' onClick={(e) => findRival(e, userInfo)} as='input' type='button' value='Tìm đối thủ' onChange={() => { }}></Button>
-                            <Button className='home-buttons' variant='primary' onClick={() => { }}>Chơi với AI</Button>
+                            <Button className='home-buttons' variant='primary' onClick={(e) => playWithAI(e, userInfo)}>Chơi với AI</Button>
                             <Button className='home-buttons' variant='success' onClick={() => { }}>Cập nhật thông tin</Button>
                             <Button className='home-buttons' variant='info' onClick={() => logOut()}>Đăng xuất</Button>
                         </div>
@@ -83,9 +89,14 @@ function Homepage(props) {
     }
 
     function findRival(e, userInfo) {
-        e.target.value = '... Đang tìm ...';
+        e.target.value = '..Đang chờ đối thủ..';
         e.target.disabled = true;
         socket.emit('joinroom', userInfo);
+    }
+
+    function playWithAI(e, userInfo) {
+        e.target.disabled = true;
+        socket.emit('joinroom-ai', userInfo);
     }
 }
 

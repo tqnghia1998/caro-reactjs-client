@@ -50,6 +50,7 @@ body {
 
 ol, ul {
   padding-left: 30px;
+  list-style: none;
 }
 
 .status {
@@ -86,6 +87,20 @@ ol, ul {
   font-family: 'Courier New', Courier, monospace;
 }
 
+.square-current {
+  background: rgb(132, 252, 148);
+  border-radius: 2px;
+  border: 0.5px solid #282c34;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 25px;
+  height: 25px;
+  width: 25px;
+  padding: 0px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+}
+
 .square:focus {
   outline: none;
 }
@@ -106,7 +121,7 @@ ol, ul {
 .board-button {
   font: 15px 'Courier New', Courier, monospace;
   height: 30px;
-  width: 250px;
+  width: 260px;
   text-align: left;
   margin-bottom: 1px;
 }
@@ -115,7 +130,7 @@ ol, ul {
   font: 15px 'Courier New', Courier, monospace;
   height: 30px;
   margin-left: 30px;
-  width: 250px;
+  width: 260px;
   text-align: left;
   margin-bottom: 1px;
 }
@@ -147,7 +162,7 @@ ol, ul {
 }
 
 .card {
-  width: 250px;
+  width: 260px;
   margin-right: 30px;
 }
 
@@ -199,13 +214,13 @@ ol, ul {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
   height: 100px;
-  width: 200px;
+  width: 210px;
 }
 
 .home-buttons {
   font: bold 15px 'Courier New', Courier, monospace;
   height: 30px;
-  width: 200px;
+  width: 210px;
   text-align: center;
   margin-bottom: 2px;
 }
