@@ -60,7 +60,7 @@ function Homepage(props) {
                         <div className='container-button-home'>
                             <Button className='home-buttons' variant='danger' onClick={(e) => findRival(e, userInfo)} as='input' type='button' value='Tìm đối thủ' onChange={() => { }}></Button>
                             <Button className='home-buttons' variant='primary' onClick={(e) => playWithAI(e, userInfo)}>Chơi với AI</Button>
-                            <Button className='home-buttons' variant='success' onClick={() => { }}>Cập nhật thông tin</Button>
+                            <Button className='home-buttons' variant='success' onClick={() => changeInfo()}>Cập nhật thông tin</Button>
                             <Button className='home-buttons' variant='info' onClick={() => logOut()}>Đăng xuất</Button>
                         </div>
                     </center>
@@ -97,6 +97,11 @@ function Homepage(props) {
     function playWithAI(e, userInfo) {
         e.target.disabled = true;
         socket.emit('joinroom-ai', userInfo);
+    }
+
+    function changeInfo() {
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+        window.location.href = '/changeinfo';
     }
 }
 

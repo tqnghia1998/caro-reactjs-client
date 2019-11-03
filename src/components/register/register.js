@@ -15,8 +15,12 @@ function Register(props) {
   
     function validateForm() {
         const { isFetching } = props;
-
-        return !isFetching && email.length > 0 && password.length > 0;
+        return !isFetching
+            && username.length > 0
+            && password.length > 0
+            && repassword.length > 0
+            && email.length > 0
+            && fullname.length > 0;
     }
   
     function handleSubmit(event) {
@@ -37,7 +41,7 @@ function Register(props) {
             <form onSubmit={handleSubmit}>
 
                 <FormGroup controlId='username'>
-                    <FormLabel className='form-label'>Tên đăng nhập</FormLabel>
+                    <FormLabel className='form-label'>Tên đăng nhập (bắt buộc)</FormLabel>
                     <FormControl
                         autoFocus
                         value={username}
@@ -46,7 +50,7 @@ function Register(props) {
                 </FormGroup>
 
                 <FormGroup controlId='password'>
-                    <FormLabel className='form-label'>Mật khẩu</FormLabel>
+                    <FormLabel className='form-label'>Mật khẩu (bắt buộc)</FormLabel>
                     <FormControl
                         value={password}
                         onChange={e => setPassword(e.target.value)}
@@ -55,7 +59,7 @@ function Register(props) {
                 </FormGroup>
 
                 <FormGroup controlId='repassword'>
-                    <FormLabel className='form-label'>Nhập lại mật khẩu</FormLabel>
+                    <FormLabel className='form-label'>Nhập lại mật khẩu (bắt buộc)</FormLabel>
                     <FormControl
                         value={repassword}
                         onChange={e => setRepassword(e.target.value)}
@@ -64,7 +68,7 @@ function Register(props) {
                 </FormGroup>
 
                 <FormGroup controlId='email'>
-                    <FormLabel className='form-label'>E-mail cá nhân</FormLabel>
+                    <FormLabel className='form-label'>E-mail cá nhân (bắt buộc)</FormLabel>
                     <FormControl
                         value={email}
                         onChange={e => setEmail(e.target.value)}
@@ -73,7 +77,7 @@ function Register(props) {
                 </FormGroup>
 
                 <FormGroup controlId='fullname'>
-                    <FormLabel className='form-label'>Họ tên</FormLabel>
+                    <FormLabel className='form-label'>Họ tên (bắt buộc)</FormLabel>
                     <FormControl
                         value={fullname}
                         onChange={e => setFullname(e.target.value)}

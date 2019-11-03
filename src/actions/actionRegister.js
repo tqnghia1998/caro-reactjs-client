@@ -38,5 +38,8 @@ export default function fetchRegister(username, password, email, fullname) {
         .then(json => {
             dispatch(actionRegister('SUCCESS', json.message));
         })
+        .catch(err => {
+            dispatch(actionRegister('FAILED', 'Đã có lỗi xảy ra, vui lòng thử lại'));
+        })
     }
   }

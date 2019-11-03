@@ -13,6 +13,7 @@ import {
 import Homepage from './containers/homepage';
 import Login from './containers/login';
 import Register from './containers/register';
+import Info from './containers/info';
 import './css/index.css';
 
 // Function save state
@@ -65,6 +66,11 @@ const appRoot = (
                 <Route path='/register'>
                     <Provider store={store}>
                         <Register />
+                    </Provider>
+                </Route>
+                <Route path='/changeinfo'>
+                    <Provider store={store}>
+                        <Info />
                     </Provider>
                 </Route>
                 <Route path='/'>

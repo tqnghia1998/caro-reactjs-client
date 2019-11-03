@@ -44,5 +44,8 @@ export default function fetchLogin(username, password) {
                 dispatch(actionLogin('FAILED', json.message));
             }
         })
+        .catch(err => {
+            dispatch(actionLogin('FAILED', 'Đã có lỗi xảy ra, vui lòng thử lại'));
+        })
     }
   }

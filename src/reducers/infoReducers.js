@@ -32,6 +32,32 @@ export default function handleGetInfo(state = Config.initialState, action) {
                 return state;
             }
 
+        case ActionType.CHANGE_INFO:
+            if (action.status === 'REQUEST') {
+                return {
+                    ...state,
+                    isFetching: true,
+                    message: action.message
+                }
+            }
+            else if (action.status === 'FAILED') {
+                return {
+                    ...state,
+                    isFetching: false,
+                    message: action.message
+                }
+            }
+            else if (action.status === 'SUCCESS') {
+                return {
+                    ...state,
+                    isFetching: false,
+                    message: action.message
+                }
+            }
+            else {
+                return state;
+            }
+
         case ActionType.REFRESH:
             return Config.initialState;
         
