@@ -36,3 +36,15 @@
     color: white;
     font: 'Courier New', Courier, monospace;
 }
+
+.input-file {
+    color: white;
+}
+
+.avatar-big {
+    width: 175px;
+    height: 175px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}

@@ -7,6 +7,8 @@ import logo from '../../logo.svg';
 import './css/game.css';
 import socket from '../../socket.io/socket.io';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import defaultAvatar from '../../images/boy.png'
+import axios from 'axios';
 
 function Game(props) {
     const { actions } = props;
@@ -20,6 +22,10 @@ function Game(props) {
     const { isFetching } = props;
     const { message } = props;
 
+    // Temporary states
+    const [avatarSrc, setAvatarSrc] = useState(localStorage.getItem('avatar_' + userInfo.username) || defaultAvatar);
+    const [rivalAvatarSrc, setRivalAvatarSrc] = useState(defaultAvatar);
+
     // Setup socket
     setupSocket();
 
@@ -30,9 +36,26 @@ function Game(props) {
     for (var i = 0; i < chatHistory.length; i++) {
         const color = chatHistory[i].sender === 'Mình' ? 'blue' : 'red';
         const style = { color: color };
-        chatHistoryUI.push(<b style={style}>{chatHistory[i].sender}</b>);
+        chatHistoryUI.push(<b style={style} key={i}>{chatHistory[i].sender}</b>);
         chatHistoryUI.push(': ' + chatHistory[i].message);
-        chatHistoryUI.push(<br></br>);
+        chatHistoryUI.push(<br key={i}></br>);
+    }
+
+    // Setup avatar
+    if (roomInfo.justReconnect || chatHistory.length === 0) {
+        if (roomInfo.justReconnect) {
+            getUserAvatar();
+            roomInfo.justReconnect = null;
+            socket.emit('chat', '@@@AVATAR_SIGNAL@@@' + avatarSrc);
+        }
+        else {
+            if (avatarSrc === defaultAvatar) {
+                getUserAvatar();
+            }
+            else {
+                socket.emit('chat', '@@@AVATAR_SIGNAL@@@' + avatarSrc);
+            }
+        }
     }
 
     // Setup disable state for components
@@ -102,6 +125,7 @@ function Game(props) {
                             <Card.Body className='card-body'>
                                 <Card.Title className='card-title'>[{isPlayerX ? `X` : `O`}] Mình [{isPlayerX ? `X` : `O`}]</Card.Title>
                                 <Card.Text className='card-text-bold'><b>{ourname}</b></Card.Text>
+                                <img src={avatarSrc} className='avatar-small' /><br></br>
                                 <Button className='logout-button' variant='info' onClick={() => goHome()}>Trang chủ</Button>
                             </Card.Body>
                         </Card>
@@ -111,29 +135,11 @@ function Game(props) {
                             <Card.Body className='card-body'>
                                 <Card.Title className='card-title'>[{!isPlayerX ? `X` : `O`}] Đối thủ [{!isPlayerX ? `X` : `O`}]</Card.Title>
                                 <Card.Text className='card-text-bold'><b>{rivalname}</b></Card.Text>
+                                <img src={rivalAvatarSrc} className='avatar-small' /><br></br>
                                 <Button className='logout-button' variant='info' onClick={() => requestSurrender()}
                                         disabled={needToDisable}>Đầu hàng</Button>&nbsp;&nbsp;
                                 <Button className='logout-button' variant='info' onClick={() => requestCeasefire()}
                                         disabled={needToDisable}>Xin hoà</Button>
-                            </Card.Body>
-                        </Card>
-                        <br></br>
-                        {/* Chat panel */}
-                        <Card className='card'>
-                            <Card.Body className='card-body'>
-                                <Card.Title className='card-title'>Nhắn tin</Card.Title>
-                                <div className='scroll-view-chat'>
-                                    {chatHistoryUI}
-                                </div>
-                                <form onSubmit={e => handleChat(e)}>
-                                    <FormControl type='chatMessage'
-                                        className='input-message'
-                                        placeholder='Nhập và nhấn Enter'
-                                        value={chatMessage}
-                                        disabled={needToDisable}
-                                        onChange={e => setChatMessage(e.target.value)}>
-                                    </FormControl>
-                                </form>
                             </Card.Body>
                         </Card>
                     </div>
@@ -150,6 +156,24 @@ function Game(props) {
                         <ScrollToBottom className='scroll-view' mode={accendingMode ? `bottom` : `top`}>
                             <ol >{moves}</ol>
                         </ScrollToBottom>
+                        {/* Chat panel */}
+                        <Card className='card-chat'>
+                            <Card.Body className='card-body'>
+                                <Card.Title className='card-title'>Nhắn tin</Card.Title>
+                                <div className='scroll-view-chat'>
+                                    {chatHistoryUI}
+                                </div>
+                                <form onSubmit={e => handleChat(e)}>
+                                    <FormControl type='chatMessage'
+                                        className='input-message'
+                                        placeholder='Nhập và nhấn Enter'
+                                        value={chatMessage}
+                                        disabled={needToDisable}
+                                        onChange={e => setChatMessage(e.target.value)}>
+                                    </FormControl>
+                                </form>
+                            </Card.Body>
+                        </Card>
                     </div>
                 </div>
             </header>
@@ -399,7 +423,19 @@ function Game(props) {
             }
         });
         socket.on('chat', function (data) {
-            actions.actionChat(data);
+            if (data.message.startsWith('@@@AVATAR_SIGNAL@@@')) {
+                if (data.sender === 'ĐThủ') {
+                    const fullUrl = data.message.substr('@@@AVATAR_SIGNAL@@@'.length);
+                    setRivalAvatarSrc(fullUrl);
+                }
+                if (chatHistory.length === 0) {
+                    data.message = '[Gửi ảnh đại diện]';
+                    actions.actionChat(data);
+                }
+            }
+            else {
+                actions.actionChat(data);
+            }
         });
 
         // Surrender / Ceasefire
@@ -517,6 +553,7 @@ function Game(props) {
 
             // If found the room, join it
             if (data) {
+                data.justReconnect = true;
                 actions.actionJoinRoom(data);
             }
 
@@ -569,6 +606,17 @@ function Game(props) {
             socket.emit('undo-request', request);
             actions.actionRequest(true, `... Đang chờ đối thủ trả lời ...`);
         }
+    }
+
+    function getUserAvatar() {
+        var imgUrl = 'https://firebasestorage.googleapis.com/v0/b/webnc-1612422.appspot.com/o/' + userInfo.username + '.png';
+        axios.get(imgUrl).then(res => {
+            if (res && res.data) {
+                var fullUrl = imgUrl + '?alt=media&token=' + res.data.downloadTokens;
+                socket.emit('chat', '@@@AVATAR_SIGNAL@@@' + fullUrl);
+                setAvatarSrc(fullUrl);
+            }
+        }).catch(err => {});
     }
 }
 

@@ -20,7 +20,7 @@ function Login(props) {
         event.preventDefault();
         actions.fetchLogin(username, password);
     }
-  
+
     return (
         <div className='Login'>
             <center>

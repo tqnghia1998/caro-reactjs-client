@@ -2,22 +2,32 @@ import React, { useState } from 'react';
 import { Button, FormGroup, FormControl, FormLabel } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../login/css/login.css';
+import axios from 'axios';
+import defaultAvatar from '../../images/boy.png'
 
 function Info(props) {
+
+    const { message } = props;
+    const { actions } = props;
 
     const [oldPassword, setOldPassword] = useState('');
     const [password, setPassword] = useState('');
     const [repassword, setRepassword] = useState('');
     const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('userInfo')));
-    localStorage.setItem('userInfo', null);
+    const [file, setFile] = useState('');
+    const [buttonLabel, setButtonLabel] = useState('Đăng ảnh');
+    const [imgSrc, setImgSrc] = useState(localStorage.getItem('avatar_' + userInfo.username) || defaultAvatar);
 
+    localStorage.setItem('userInfo', null);
     if (!userInfo) {
         window.location.href = '/';
         return;
     }
 
-    const { message } = props;
-    const { actions } = props;
+    // If local storage has no avatar link
+    if (imgSrc === defaultAvatar) {
+        getAvatar();
+    }
   
     function validateForm() {
         const { isFetching } = props;
@@ -35,6 +45,34 @@ function Info(props) {
         else {
             actions.fetchChangeInfo(userInfo.username, oldPassword, password, userInfo.email, userInfo.fullname);
         }
+    }
+
+    function uploadImage(e) {
+
+        e.target.disable = true;
+        e.target.value = '... Đang tải lên ...';
+
+        // Start to upload image to firebase
+        const fd = new FormData();
+        fd.append('image', file, userInfo.username + '.png');
+        axios.post('https://us-central1-webnc-1612422.cloudfunctions.net/uploadFile', fd, {
+            onUploadProgress: progressEvent => {
+                if (progressEvent.loaded < progressEvent.total) {
+                    setButtonLabel('... ' + Math.floor(100 * progressEvent.loaded / progressEvent.total) + '% ...');
+                }
+                else {
+                    setButtonLabel('... Đợi tí nhé ...');
+                    setTimeout(setButtonLabel, 5000, 'Đăng ảnh');
+                }
+            }
+        })
+        .then(res => {
+            console.log(res);
+            getAvatar();
+        }).catch(err => {
+            console.log(err);
+            alert('Không thể đăng ảnh, vui lòng thử lại');
+        });
     }
   
     return (
@@ -66,6 +104,7 @@ function Info(props) {
                     <FormControl
                         value={password}
                         onChange={e => setPassword(e.target.value)}
+                        readOnly={oldPassword.length === 0}
                         type='password'/>
                 </FormGroup>
 
@@ -74,6 +113,7 @@ function Info(props) {
                     <FormControl
                         value={repassword}
                         onChange={e => setRepassword(e.target.value)}
+                        readOnly={oldPassword.length === 0}
                         type='password'
                     />
                 </FormGroup>
@@ -101,7 +141,11 @@ function Info(props) {
                         type='fullname' />
                 </FormGroup>
 
-                <br></br>
+                <center>
+                    <img src={imgSrc} className='avatar-big' alt='logo' />
+                    <input type='file' className='input-file' onChange={(e) => setFile(e.target.files[0])}></input>
+                </center><br></br>
+                <Button block as='input' type='button' variant='success' onClick={(e) => uploadImage(e)} value={buttonLabel} onChange={() => setButtonLabel()}></Button>
 
                 <Button block disabled={!validateForm()} type='submit'>
                     Cập nhật
@@ -113,6 +157,22 @@ function Info(props) {
             </center>
         </div>
     );
+
+    function getAvatar() {
+        var imgUrl = 'https://firebasestorage.googleapis.com/v0/b/webnc-1612422.appspot.com/o/' + userInfo.username + '.png';
+        axios.get(imgUrl).then(res => {
+            if (res && res.data) {
+                var fullUrl = imgUrl + '?alt=media&token=' + res.data.downloadTokens;
+                setImgSrc(fullUrl);
+                localStorage.setItem('avatar_' + userInfo.username, fullUrl);
+            }
+            else {
+                console.log(res);
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+    }
 }
 
 export default Info;
