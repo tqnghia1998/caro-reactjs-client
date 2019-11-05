@@ -52,7 +52,6 @@
 .facebook-login-image {
     width: 110px;
     height: 110px;
-    margin-top: -5px;
 }
 
 .google-login-image {
@@ -61,10 +60,9 @@
 }
 
 .social-button {
-    margin-top: 15px;
-    margin-left: 22px;
+    background: transparent;
+    border: none;
     width: 125px;
-    height: 30px;
+    height: 100px;
     margin-bottom: 10px;
-    padding: 0px;
 }

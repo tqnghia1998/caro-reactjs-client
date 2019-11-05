@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button, FormGroup, FormControl } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import logo from '../../logo.svg';
+import facebookImg from '../../images/facebook.png';
+import googleImg from '../../images/google.png';
 import './css/login.css';
 import config from '../../config';
 
@@ -60,34 +62,24 @@ function Login(props) {
                     />
                 </FormGroup>
 
-                <Button block disabled={!validateForm()} type='submit' variant='success'>
+                <Button block disabled={!validateForm()} type='submit' >
                     Đăng nhập
-                </Button>
-
-                <Button className='social-button' onClick={() => goToFacebookLogin()}>
-                    Facebook
-                </Button>
-                <Button className='social-button' variant='danger' onClick={() => goToGoogleLogin()}>
-                    Google
                 </Button>
 
             </form>
             <center className='link'>
+                <button className='social-button' onClick={() => { window.location.href = config['server-domain'] + 'users/login/facebook/' }}>
+                    <img src={facebookImg} className='facebook-login-image' alt='facebook-img'></img>
+                </button>
+                <button className='social-button' onClick={() => { window.location.href = config['server-domain'] + 'users/login/google/' }}>
+                    <img src={googleImg} className='google-login-image' alt='google-img'></img>
+                </button>
+                <br></br>
                 <Link to='/register'>Đăng ký tài khoản</Link><br></br><br></br>
                 <p className='status-login-small'>{message}</p>
             </center>
         </div>
     );
-
-    function goToFacebookLogin()
-    {
-        window.location.href = config['server-domain'] + 'users/login/facebook/';
-    }
-
-    function goToGoogleLogin()
-    {
-        window.location.href = config['server-domain'] + 'users/login/google/';
-    }
 }
 
 export default Login;
