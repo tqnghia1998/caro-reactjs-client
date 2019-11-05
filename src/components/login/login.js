@@ -68,12 +68,12 @@ function Login(props) {
 
             </form>
             <center className='link'>
-                <button className='social-button' onClick={() => { window.location.href = config['server-domain'] + 'users/login/facebook/' }}>
+                <Button className='social-button' onClick={() => { window.location.href = config['server-domain'] + 'users/login/facebook/' }}>
                     <img src={facebookImg} className='facebook-login-image' alt='facebook-img'></img>
-                </button>
-                <button className='social-button' onClick={() => { window.location.href = config['server-domain'] + 'users/login/google/' }}>
+                </Button>
+                <Button className='social-button' onClick={() => { window.location.href = config['server-domain'] + 'users/login/google/' }}>
                     <img src={googleImg} className='google-login-image' alt='google-img'></img>
-                </button>
+                </Button>
                 <br></br>
                 <Link to='/register'>Đăng ký tài khoản</Link><br></br><br></br>
                 <p className='status-login-small'>{message}</p>
