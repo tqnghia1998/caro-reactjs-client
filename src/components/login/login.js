@@ -64,10 +64,10 @@ function Login(props) {
                     Đăng nhập
                 </Button>
 
-                <Button className='social-button' onClick={() => { window.location.href = config['server-domain'] + 'users/login/facebook/' }}>
+                <Button className='social-button' onClick={() => goToFacebookLogin()}>
                     Facebook
                 </Button>
-                <Button className='social-button' variant='danger' onClick={() => { window.location.href = config['server-domain'] + 'users/login/google/' }}>
+                <Button className='social-button' variant='danger' onClick={() => goToGoogleLogin()}>
                     Google
                 </Button>
 
@@ -78,6 +78,16 @@ function Login(props) {
             </center>
         </div>
     );
+
+    function goToFacebookLogin()
+    {
+        window.location.href = config['server-domain'] + 'users/login/facebook/';
+    }
+
+    function goToGoogleLogin()
+    {
+        window.location.href = config['server-domain'] + 'users/login/google/';
+    }
 }
 
 export default Login;
