@@ -16,7 +16,7 @@ function Info(props) {
     const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('userInfo')));
     const [file, setFile] = useState('');
     const [buttonLabel, setButtonLabel] = useState('Đăng ảnh');
-    const [imgSrc, setImgSrc] = useState(localStorage.getItem('avatar_' + userInfo.username) || defaultAvatar);
+    const [imgSrc, setImgSrc] = useState(localStorage.getItem('avatar_' + (userInfo ? userInfo.username : '')) || defaultAvatar);
 
     localStorage.setItem('userInfo', null);
     if (!userInfo) {
@@ -49,7 +49,12 @@ function Info(props) {
 
     function uploadImage(e) {
 
-        e.target.disable = true;
+        if (file === '') {
+            alert('Xin vui lòng chọn ảnh trước');
+            return;
+        }
+
+        e.target.disabled = true;
         e.target.value = '... Đang tải lên ...';
 
         // Start to upload image to firebase
@@ -62,7 +67,7 @@ function Info(props) {
                 }
                 else {
                     setButtonLabel('... Đợi tí nhé ...');
-                    setTimeout(setButtonLabel, 5000, 'Đăng ảnh');
+                    setTimeout(setButtonLabel, 5000, 'Hoàn thành');
                 }
             }
         })
@@ -145,7 +150,7 @@ function Info(props) {
                     <img src={imgSrc} className='avatar-big' alt='logo' />
                     <input type='file' className='input-file' onChange={(e) => setFile(e.target.files[0])}></input>
                 </center><br></br>
-                <Button block as='input' type='button' variant='success' onClick={(e) => uploadImage(e)} value={buttonLabel} onChange={() => setButtonLabel()}></Button>
+                <Button block as='input' type='button' variant='warning' onClick={(e) => uploadImage(e)} value={buttonLabel} onChange={() => setButtonLabel()}></Button>
 
                 <Button block disabled={!validateForm()} type='submit'>
                     Cập nhật

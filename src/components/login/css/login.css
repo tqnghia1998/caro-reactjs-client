@@ -61,5 +61,8 @@
 
 .social-button {
     background: transparent;
-    border: none;   
+    border: none;
+    width: 200px;
+    height: 100px;
+    margin-bottom: 10px;
 }
