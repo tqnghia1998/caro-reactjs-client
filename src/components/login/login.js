@@ -13,8 +13,8 @@ function Login(props) {
     const address = window.location.href;
     if (address.indexOf('?token=') !== -1) {
         var token = address.substr(address.indexOf('?token=') + '?token='.length);
-        if (token.indexOf('#_=_') !== -1) {
-            token = token.substr(0, token.indexOf('#_=_'));
+        if (token.indexOf('#nghiatq') !== -1) {
+            token = token.substr(0, token.indexOf('#nghiatq'));
         }
         localStorage.setItem('token', token);
         window.location.href = '/';
