@@ -115,9 +115,10 @@ function Game(props) {
             <header className='App-header'>
                 <img src={logo} className='App-logo' alt='logo' />
                 <Status nextMove={nextMove}
-                        winCells={winCells}
-                        rivalname={roomInfo.playerO}
-                        messages={message}/>
+                    winCells={winCells}
+                    rivalname={roomInfo.playerO}
+                    messages={message}
+                    isPlayerX={isPlayerX}/>
                 <div className='board-game'>
                     <div>
                         {/* Our infomation */}
@@ -125,7 +126,7 @@ function Game(props) {
                             <Card.Body className='card-body'>
                                 <Card.Title className='card-title'>[{isPlayerX ? `X` : `O`}] Mình [{isPlayerX ? `X` : `O`}]</Card.Title>
                                 <Card.Text className='card-text-bold'><b>{ourname}</b></Card.Text>
-                                <img src={avatarSrc} className='avatar-small' /><br></br>
+                                <img src={avatarSrc} className='avatar-small' alt='avatar'/><br></br>
                                 <Button className='logout-button' variant='info' onClick={() => goHome()}>Trang chủ</Button>
                             </Card.Body>
                         </Card>
@@ -135,7 +136,7 @@ function Game(props) {
                             <Card.Body className='card-body'>
                                 <Card.Title className='card-title'>[{!isPlayerX ? `X` : `O`}] Đối thủ [{!isPlayerX ? `X` : `O`}]</Card.Title>
                                 <Card.Text className='card-text-bold'><b>{rivalname}</b></Card.Text>
-                                <img src={rivalAvatarSrc} className='avatar-small' /><br></br>
+                                <img src={rivalAvatarSrc} className='avatar-small' alt='rivalAvatar'/><br></br>
                                 <Button className='logout-button' variant='info' onClick={() => requestSurrender()}
                                         disabled={needToDisable}>Đầu hàng</Button>&nbsp;&nbsp;
                                 <Button className='logout-button' variant='info' onClick={() => requestCeasefire()}

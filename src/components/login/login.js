@@ -2,9 +2,24 @@ import React, { useState } from 'react';
 import { Button, FormGroup, FormControl } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import logo from '../../logo.svg';
+import facebookImg from '../../images/facebook.png';
+import googleImg from '../../images/google.png';
 import './css/login.css';
+import config from '../../config';
 
 function Login(props) {
+
+    // Bad code for facebook redirect and get token
+    const address = window.location.href;
+    if (address.indexOf('?token=') !== -1) {
+        var token = address.substr(address.indexOf('?token=') + '?token='.length);
+        if (token.indexOf('#_=_') !== -1) {
+            token = token.substr(0, token.indexOf('#_=_'));
+        }
+        localStorage.setItem('token', token);
+        window.location.href = '/';
+    }
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -53,6 +68,13 @@ function Login(props) {
 
             </form>
             <center className='link'>
+                <button className='social-button' onClick={() => { window.location.href = config['server-domain'] + 'users/login/facebook/' }}>
+                    <img src={facebookImg} className='facebook-login-image' alt='facebook-img'></img>
+                </button>
+                <button className='social-button' onClick={() => { window.location.href = config['server-domain'] + 'users/login/google/' }}>
+                    <img src={googleImg} className='google-login-image' alt='google-img'></img>
+                </button>
+                <br></br>
                 <Link to='/register'>Đăng ký tài khoản</Link><br></br><br></br>
                 <p className='status-login-small'>{message}</p>
             </center>
