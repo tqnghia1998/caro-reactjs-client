@@ -1,5 +1,6 @@
 import fetch from 'cross-fetch';
 import ActionType from '../constants/actionTypes';
+import config from '../config';
 
 export function actionGetInfo(status, userInfo) {
     return {
@@ -17,7 +18,7 @@ export default function fetchInfo(token) {
 
         var bearerToken = 'Bearer ' + token;
 
-        return fetch('https://btcn06-1612422.herokuapp.com/me', {
+        return fetch(config['server-domain'] + 'me', {
             method: 'GET',
             headers: {
                 'Authorization': bearerToken

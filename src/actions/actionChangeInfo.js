@@ -1,5 +1,6 @@
 import fetch from 'cross-fetch';
 import ActionType from '../constants/actionTypes';
+import config from '../config';
 
 export function actionChangeInfo(status, message) {
     return {
@@ -18,7 +19,7 @@ export default function fetchChangeInfo(username, oldPassword, password, email, 
 
         dispatch(actionChangeInfo('REQUEST', 'Xin vui lòng đợi...'));
 
-        return fetch('https://btcn06-1612422.herokuapp.com/users/changeinfo', {
+        return fetch(config['server-domain'] + 'users/changeinfo', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain, */*',

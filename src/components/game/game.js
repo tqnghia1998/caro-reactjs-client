@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Card, FormControl } from 'react-bootstrap';
+import Dialog from 'react-bootstrap-dialog'
 import Board from './board';
 import Config from '../../constants/configs';
 import Status from './status';
@@ -11,6 +12,8 @@ import defaultAvatar from '../../images/boy.png'
 import axios from 'axios';
 
 function Game(props) {
+
+
     const { actions } = props;
     const { history } = props;
     const { stepNumber } = props;
@@ -25,6 +28,7 @@ function Game(props) {
     // Temporary states
     const [avatarSrc, setAvatarSrc] = useState(localStorage.getItem('avatar_' + userInfo.username) || defaultAvatar);
     const [rivalAvatarSrc, setRivalAvatarSrc] = useState(defaultAvatar);
+    const [dialog, setDialog] = useState('');
 
     // Setup socket
     setupSocket();
@@ -38,7 +42,7 @@ function Game(props) {
         const style = { color: color };
         chatHistoryUI.push(<b style={style} key={i}>{chatHistory[i].sender}</b>);
         chatHistoryUI.push(': ' + chatHistory[i].message);
-        chatHistoryUI.push(<br key={i}></br>);
+        chatHistoryUI.push(<br key={i + chatHistory.length}></br>);
     }
 
     // Setup avatar
@@ -119,6 +123,7 @@ function Game(props) {
                     rivalname={roomInfo.playerO}
                     messages={message}
                     isPlayerX={isPlayerX}/>
+                <Dialog ref={(el) => setDialog(el)} />
                 <div className='board-game'>
                     <div>
                         {/* Our infomation */}
@@ -441,107 +446,105 @@ function Game(props) {
 
         // Surrender / Ceasefire
         socket.on('surrender-request', function (data) {
-            if (window.confirm(`Đối thủ muốn đầu hàng ván này!`)) {
+            doConfirm('Đối thủ muốn đầu hàng ván này !', () => {
                 socket.emit('surrender-result', {
                     message: 'yes'
                 });
                 actions.actionRequest(true, `Chúc mừng bạn đã giành chiến thắng !`);
-            }
-            else {
+            }, () => {
                 socket.emit('surrender-result', {
                     message: 'no'
                 });
                 actions.actionRequest(false, null);
-            }
+            })
         });
         socket.on('surrender-result', function (data) {
             if (data.message === `yes`) {
                 actions.actionRequest(true, `Bạn đã chấp nhận thua cuộc !`);
                 if (!data.noAlert) {
-                    alert(`Đối thủ đã chấp nhận lời đầu hàng!`);
+                    dialog.showAlert(`Đối thủ đã chấp nhận lời đầu hàng!`);
                 }
             }
             else {
                 actions.actionRequest(false, null);
-                alert(`Đối thủ đã từ chối lời đầu hàng!`);
+                dialog.showAlert(`Đối thủ đã từ chối lời đầu hàng!`);
             }
         });
         socket.on('ceasefire-request', function (data) {
-            if (window.confirm(`Đối thủ muốn xin hoà ván này!`)) {
+            doConfirm('Đối thủ muốn xin hoà ván này !', () => {
                 socket.emit('ceasefire-result', {
                     message: 'yes'
                 });
                 actions.actionRequest(true, `Đã thống nhất hoà nhau !`);
-            }
-            else {
+            }, () => {
                 socket.emit('ceasefire-result', {
                     message: 'no'
                 });
                 actions.actionRequest(false, null);
-            }
+            });
         });
         socket.on('ceasefire-result', function (data) {
             if (data.message === 'yes') {
                 actions.actionRequest(true, `Đã thống nhất hoà nhau !`);
                 if (!data.noAlert) {
-                    alert(`Đối thủ đã chấp nhận hoà!`);
+                    dialog.showAlert(`Đối thủ đã chấp nhận hoà!`);
                 }
             }
             else {
                 actions.actionRequest(false, null);
-                alert(`Đối thủ đã từ chối hoà!`);
+                dialog.showAlert(`Đối thủ đã từ chối hoà!`);
             }
         });
 
         // Undo / Redo
         socket.on('undo-request', function (data) {
-            if (window.confirm(`Đối thủ muốn quay về lượt #${data.stepNumber}: (${data.x},${data.y})`)) {
+            doConfirm(`Đối thủ muốn quay về lượt #${data.stepNumber}: (${data.x},${data.y}) !`, () => {
                 socket.emit('undo-result', {
                     message: 'yes',
                     stepNumber: data.stepNumber
                 });
                 jumpTo(data.stepNumber);
-            }
-            else {
-                socket.emit('undo-result', 'no');
-            }
+            }, () => {
+                socket.emit('undo-result', {
+                    message: 'no'
+                });
+            });
         });
         socket.on('undo-result', function (data) {
             if (data.message === `yes`) {
                 jumpTo(data.stepNumber);
                 if (!data.noAlert) {
-                    alert(`Đối thủ đã đồng ý!`);
+                    dialog.showAlert(`Đối thủ đã đồng ý!`);
                 }
             }
             else {
-                alert(`Đối thủ không đồng ý!`);
+                dialog.showAlert(`Đối thủ không đồng ý!`);
             }
             actions.actionRequest(false, null);
         });
 
         // Play again
         socket.on('play-again-request', function (data) {
-            if (window.confirm(`Đối thủ muốn chơi lại!`)) {
+            doConfirm('Đối thủ muốn chơi lại !', () => {
                 actions.actionResetGame(isPlayerX ? Config.xPlayer : Config.oPlayer);
                 socket.emit('play-again-result', {
                     message: 'yes'
                 });
-            }
-            else {
+            }, () => {
                 socket.emit('undo-result', {
                     message: 'no'
                 });
-            }
+            });
         });
         socket.on('play-again-result', function (data) {
             if (data.message === 'yes') {
                 actions.actionResetGame(isPlayerX ? Config.oPlayer : Config.xPlayer);
                 if (!data.noAlert) {
-                    alert(`Đối thủ đã đồng ý!`);
+                    dialog.showAlert(`Đối thủ đã đồng ý!`);
                 }
             }
             else {
-                alert(`Đối thủ không đồng ý!`);
+                dialog.showAlert(`Đối thủ không đồng ý!`);
             }
         });
 
@@ -565,27 +568,40 @@ function Game(props) {
         });
     }
 
+    function doConfirm(message, callbackYes, callbackNo) {
+        dialog.show({
+            title: 'Xác nhận',
+            body: message,
+            actions: [
+                Dialog.CancelAction(() => callbackNo()),
+                Dialog.OKAction(() => callbackYes())
+            ],
+            bsSize: 'sm',
+            onHide: (dialog) => {}
+        })
+    }
+
     function requestSurrender() {
-        if (window.confirm(`Bạn muốn đầu hàng ván này?`)) {
+        doConfirm('Bạn muốn đầu hàng ván này ?', () => {
             socket.emit('surrender-request', userInfo.username);
             actions.actionRequest(true, `... Đang chờ đối thủ trả lời ...`);
-        }
+        }, () => {});
     }
 
     function requestCeasefire() {
-        if (window.confirm(`Bạn muốn xin hoà ván này?`)) {
+        doConfirm('Bạn muốn xin hoà ván này ?', () => {
             socket.emit('ceasefire-request', userInfo.username);
             actions.actionRequest(true, `... Đang chờ đối thủ trả lời ...`);
-        }
+        }, () => {});
     }
 
     function requestUndo(stepNumber) {
 
         if (stepNumber === 0) {
-            if (window.confirm(`Bạn muốn chơi lại?`)) {
+            doConfirm('Bạn muốn chơi lại ?', () => {
                 socket.emit('play-again-request', '');
                 actions.actionRequest(true, `..! Đang chờ đối thủ đồng ý !..`);
-            }
+            }, () => {});
             return;
         }
 
@@ -603,10 +619,10 @@ function Game(props) {
             request.nextY = history[stepNumber + 1].y;
         }
 
-        if (window.confirm(`Bạn muốn quay về lượt này?`)) {
+        doConfirm('Bạn muốn quay về lượt này ?', () => {
             socket.emit('undo-request', request);
             actions.actionRequest(true, `... Đang chờ đối thủ trả lời ...`);
-        }
+        }, () => {});
     }
 
     function getUserAvatar() {

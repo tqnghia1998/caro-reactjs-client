@@ -1,5 +1,6 @@
 import fetch from 'cross-fetch';
 import ActionType from '../constants/actionTypes';
+import config from '../config';
 
 export function actionLogin(status, message) {
     return {
@@ -15,7 +16,7 @@ export default function fetchLogin(username, password) {
   
         dispatch(actionLogin('REQUEST', 'Xin vui lòng đợi...'));
 
-        return fetch('https://btcn06-1612422.herokuapp.com/users/login', {
+        return fetch(config['server-domain'] + 'users/login', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain, */*',

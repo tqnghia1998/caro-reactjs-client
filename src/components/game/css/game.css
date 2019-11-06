@@ -73,6 +73,11 @@ ol, ul {
   font-family: 'Courier New', Courier, monospace;
 }
 
+.square:focus {
+   outline: none !important;
+   box-shadow: none;
+}
+
 .square-win {
   background: rgb(245, 242, 67);
   border-radius: 2px;
@@ -137,10 +142,14 @@ ol, ul {
 .scroll-view {
   font-size: 13px;
   overflow: hidden;
-  overflow-y: scroll;
+  overflow-y: hidden;
   height: 233px;
   list-style: none;
   margin-left: -30px;
+}
+
+::-webkit-scrollbar {
+    width: 0em;
 }
 
 .scroll-view-chat {
