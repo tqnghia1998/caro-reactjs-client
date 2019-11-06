@@ -10,4 +10,4 @@ var exports_2 = {
     'server-domain': 'https://btcn06-1612422.herokuapp.com/'
 };
 
-export default exports_1;
+export default exports_2;
